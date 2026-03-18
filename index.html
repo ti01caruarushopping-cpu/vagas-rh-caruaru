@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+
+<link rel="manifest" href="/manifest.json">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Vagas RH">
+<meta name="theme-color" content="#06080f">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="/favicon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Controle de Vagas 2026 · Caruaru Shopping</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#06080f;--s1:#0d1117;--s2:#161b27;--s3:#1e2635;--border:#232d42;
+  --blue:#4f8ef7;--green:#22d3a0;--amber:#f5a623;--red:#f25c5c;
+  --purple:#9b72f7;--teal:#22d3d3;--pink:#e879a0;--lime:#84cc16;
+  --t1:#e8edf7;--t2:#8896b0;--t3:#3d4f6b;
+  --font:'Outfit',sans-serif;--mono:'JetBrains Mono',monospace;
+}
+html,body{width:100%;overflow-x:hidden}
+body{background:var(--bg);color:var(--t1);font-family:var(--font);min-height:100vh}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 600px 400px at 5% 0%,rgba(79,142,247,.07) 0%,transparent 70%),
+    radial-gradient(ellipse 500px 300px at 95% 100%,rgba(34,211,160,.05) 0%,transparent 70%);}
+.wrap{position:relative;z-index:1;width:100%}
+
+/* ── HEADER ── */
+header{display:flex;align-items:center;justify-content:space-between;
+  padding:14px 16px;background:rgba(6,8,15,.95);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);position:sticky;top:0;z-index:200;
+  gap:10px;flex-wrap:wrap;}
+.logo{display:flex;align-items:center;gap:10px;min-width:0}
+.logo-ico{width:34px;height:34px;border-radius:8px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--blue),var(--purple));
+  display:flex;align-items:center;justify-content:center;font-size:1rem}
+.logo h1{font-size:1rem;font-weight:700;letter-spacing:-.02em;white-space:nowrap}
+.logo p{font-size:.62rem;color:var(--t2);margin-top:1px;white-space:nowrap}
+.hdr-r{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.badge{font-size:.6rem;padding:3px 8px;border-radius:6px;white-space:nowrap;font-family:var(--mono)}
+.b-blue{background:rgba(79,142,247,.1);color:var(--blue);border:1px solid rgba(79,142,247,.2)}
+.b-green{background:rgba(34,211,160,.1);color:var(--green);border:1px solid rgba(34,211,160,.2)}
+.b-amber{background:rgba(245,166,35,.1);color:var(--amber);border:1px solid rgba(245,166,35,.2)}
+.btn-r{display:flex;align-items:center;gap:5px;background:var(--blue);color:#fff;border:none;
+  padding:7px 12px;border-radius:8px;font-family:var(--font);font-size:.72rem;font-weight:600;
+  cursor:pointer;transition:all .2s;white-space:nowrap}
+.btn-r:hover{background:#3a7de8}
+.btn-r:disabled{opacity:.5;cursor:not-allowed}
+.btn-r svg{transition:transform .4s;flex-shrink:0}
+.btn-r.spin svg{animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── TABS ── */
+nav{display:flex;padding:0 16px;overflow-x:auto;background:rgba(6,8,15,.7);
+  border-bottom:1px solid var(--border);-webkit-overflow-scrolling:touch}
+nav::-webkit-scrollbar{display:none}
+.tab{padding:11px 14px;font-size:.73rem;font-weight:500;color:var(--t2);background:none;
+  border:none;border-bottom:2px solid transparent;cursor:pointer;transition:all .15s;
+  white-space:nowrap;font-family:var(--font);flex-shrink:0}
+.tab:hover{color:var(--t1)}
+.tab.on{color:var(--blue);border-bottom-color:var(--blue)}
+
+/* ── CONTENT ── */
+.content{padding:16px;width:100%}
+.sec{animation:fu .3s ease}
+@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── STATUS BAR ── */
+.status-bar{display:flex;align-items:center;gap:9px;padding:9px 13px;
+  background:var(--s2);border:1px solid var(--border);border-radius:9px;
+  margin-bottom:14px;font-size:.68rem;color:var(--t2);flex-wrap:wrap}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0;
+  animation:pulse 2s infinite}
+.status-dot.loading{background:var(--amber);animation:pulse .8s infinite}
+.status-dot.error{background:var(--red);animation:none}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.status-bar b{color:var(--t1)}
+
+/* ── KPIs ── */
+.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:16px}
+@media(min-width:480px){.kpis{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:768px){.kpis{grid-template-columns:repeat(4,1fr)}}
+@media(min-width:1024px){.kpis{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}}
+.kpi{background:var(--s1);border:1px solid var(--border);border-radius:10px;
+  padding:13px 14px;position:relative;overflow:hidden;cursor:default}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--ac)}
+.kpi-e{position:absolute;right:10px;top:8px;font-size:1.1rem;opacity:.18}
+.kpi-l{font-size:.59rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--t2);margin-bottom:6px}
+.kpi-v{font-size:1.7rem;font-weight:800;color:var(--t1);line-height:1;font-family:var(--mono)}
+.kpi-n{font-size:.6rem;color:var(--t3);margin-top:3px}
+
+/* ── GRID RESPONSIVO ── */
+.g1{display:grid;grid-template-columns:1fr;gap:13px;margin-bottom:13px}
+.g2{display:grid;grid-template-columns:1fr;gap:13px;margin-bottom:13px}
+.g3{display:grid;grid-template-columns:1fr;gap:13px;margin-bottom:13px}
+@media(min-width:700px){.g2{grid-template-columns:1fr 1fr}}
+@media(min-width:900px){.g3{grid-template-columns:1fr 1fr 1fr}}
+
+/* ── CARD ── */
+.card{background:var(--s1);border:1px solid var(--border);border-radius:10px;padding:16px;width:100%}
+.card-hd{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;
+  color:var(--t2);margin-bottom:13px;display:flex;align-items:center;gap:6px}
+.card-hd::before{content:'';display:block;width:3px;height:12px;border-radius:2px;background:var(--ac,var(--blue))}
+
+/* ── HBAR ── */
+.hbar{display:flex;flex-direction:column;gap:7px}
+.hbar-row{display:flex;align-items:center;gap:7px}
+.hbar-l{font-size:.65rem;color:var(--t2);width:110px;flex-shrink:0;text-align:right;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(min-width:400px){.hbar-l{width:130px}}
+.hbar-t{flex:1;height:19px;background:var(--bg);border-radius:4px;overflow:hidden;min-width:0}
+.hbar-f{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--c1),var(--c2));
+  display:flex;align-items:center;justify-content:flex-end;padding-right:6px;
+  transition:width 1.1s cubic-bezier(.4,0,.2,1);min-width:20px}
+.hbar-n{font-size:.62rem;font-weight:700;color:#fff}
+.hbar-p{font-family:var(--mono);font-size:.58rem;color:var(--t3);width:28px;text-align:right;flex-shrink:0}
+
+/* ── DONUT ── */
+.donut-wrap{display:flex;align-items:center;gap:16px}
+.donut-leg{display:flex;flex-direction:column;gap:7px;flex:1;min-width:0}
+.leg-r{display:flex;align-items:center;gap:6px;font-size:.67rem;color:var(--t2)}
+.leg-d{width:7px;height:7px;border-radius:2px;flex-shrink:0}
+.leg-v{margin-left:auto;font-family:var(--mono);font-weight:600;color:var(--t1);font-size:.67rem}
+
+/* ── FUNNEL ── */
+.funnel{display:flex;flex-direction:column;gap:5px}
+.fn{display:flex;align-items:center;gap:8px;background:var(--s2);border-radius:7px;
+  padding:8px 10px;border-left:3px solid var(--c);transition:background .12s}
+.fn:hover{background:var(--s3)}
+.fn-nm{font-size:.67rem;color:var(--t2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.fn-bar{width:50px;height:4px;background:var(--bg);border-radius:3px;overflow:hidden;flex-shrink:0}
+@media(min-width:400px){.fn-bar{width:65px}}
+.fn-fill{height:100%;border-radius:3px}
+.fn-n{font-family:var(--mono);font-size:.73rem;font-weight:700;color:var(--t1);min-width:18px;text-align:right;flex-shrink:0}
+
+/* ── PILLS ── */
+.pill{display:inline-flex;align-items:center;padding:2px 7px;border-radius:20px;
+  font-size:.59rem;font-weight:600;letter-spacing:.02em;white-space:nowrap}
+.p-open  {background:rgba(34,211,160,.12);color:#22d3a0}
+.p-closed{background:rgba(100,116,139,.15);color:#94a3b8}
+.p-late  {background:rgba(242,92,92,.12);color:#f87171}
+.p-ok    {background:rgba(79,142,247,.12);color:#4f8ef7}
+.p-adm   {background:rgba(245,166,35,.12);color:#f5a623}
+.p-cancel{background:rgba(100,116,139,.1);color:#64748b}
+.p-will  {background:rgba(155,114,247,.12);color:#9b72f7}
+.p-repr  {background:rgba(242,92,92,.08);color:#f87171}
+.p-cand  {background:rgba(34,211,160,.1);color:#22d3a0}
+
+/* ── TABLE (mobile-first scroll only vertical) ── */
+.tbl-f{display:flex;gap:7px;margin-bottom:10px;flex-wrap:wrap;align-items:center}
+.tbl-wrap{width:100%;overflow-x:auto;overflow-y:auto;max-height:420px;
+  border-radius:8px;border:1px solid var(--border);-webkit-overflow-scrolling:touch}
+.fi{background:var(--s2);border:1px solid var(--border);color:var(--t1);
+  border-radius:7px;padding:6px 10px;font-family:var(--font);font-size:.71rem;
+  outline:none;transition:border-color .18s;max-width:100%}
+.fi:focus{border-color:var(--blue)}
+.fi::placeholder{color:var(--t3)}
+.fi option{background:var(--s2)}
+.tbl-count{font-size:.63rem;color:var(--t3);margin-left:auto}
+table{width:100%;border-collapse:collapse;font-size:.67rem}
+thead th{padding:8px 10px;background:var(--bg);font-family:var(--mono);font-size:.55rem;
+  font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--t3);
+  position:sticky;top:0;z-index:5;border-bottom:1px solid var(--border);
+  text-align:left;white-space:nowrap}
+tbody tr{border-bottom:1px solid rgba(35,45,66,.4);transition:background .1s}
+tbody tr:hover{background:var(--s2)}
+td{padding:7px 10px;color:var(--t2);max-width:0}
+td.m{color:var(--t1);font-weight:500}
+td.tr{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+td.dt{font-family:var(--mono);font-size:.62rem;white-space:nowrap}
+
+/* ── TIMELINE ── */
+.tl{display:flex;flex-direction:column}
+.tl-i{display:flex;gap:10px;padding-bottom:13px}
+.tl-lft{display:flex;flex-direction:column;align-items:center;width:12px;flex-shrink:0}
+.tl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:2px;border:2px solid var(--bg)}
+.tl-line{width:1px;background:var(--border);flex:1;margin-top:2px}
+.tl-i:last-child .tl-line{display:none}
+.tl-i:last-child{padding-bottom:0}
+.tl-dt{font-family:var(--mono);font-size:.58rem;color:var(--t3);margin-bottom:2px}
+.tl-tt{font-size:.73rem;font-weight:600;color:var(--t1)}
+.tl-mt{font-size:.63rem;color:var(--t2);margin-top:2px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+
+/* ── PROGRESS ── */
+.prog{display:flex;flex-direction:column;gap:8px}
+.prog-r{display:flex;align-items:center;gap:7px}
+.prog-l{font-size:.65rem;color:var(--t2);width:150px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(min-width:400px){.prog-l{width:170px}}
+.prog-t{flex:1;height:6px;background:var(--bg);border-radius:3px;overflow:hidden;min-width:0}
+.prog-f{height:100%;border-radius:3px;background:var(--c);transition:width 1s}
+.prog-n{font-family:var(--mono);font-size:.61rem;color:var(--t3);width:20px;text-align:right;flex-shrink:0}
+
+/* ── ALERT ── */
+.alert{background:rgba(242,92,92,.07);border:1px solid rgba(242,92,92,.2);
+  border-radius:9px;padding:11px 13px;margin-bottom:13px;display:flex;align-items:flex-start;gap:9px}
+.alert-hd{font-size:.72rem;font-weight:700;color:#f87171;margin-bottom:3px}
+.alert-sub{font-size:.65rem;color:var(--t2)}
+.alert-items{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="logo">
+    <img src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAIAAgADASIAAhEBAxEB/8QAHQABAAIDAQEBAQAAAAAAAAAAAAYHBQgJBAMCAf/EAFkQAAEDAwEEBQUGDhAFBAMAAAEAAgMEBQYRBxIhMQgTQVFhFCJxgZEVMjdSobEWFyNCVmJydHWSlbK0wQkYMzU2OFVzgoOUorPR0tMkNHbC4UNTV/AlY5P/xAAcAQEAAgMBAQEAAAAAAAAAAAAAAQYEBQcDAgj/xAA/EQEAAQIDAwkHAQYFBQEAAAAAAQIDBAURBiExEiJBUWFxgZGhBxMUMrHB0UIVI1Jy4fAzNGKCkggWorLC4v/aAAwDAQACEQMRAD8A3LREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBeG93i1WShdXXi40tBTN5y1EoY3XuGvM+CrHbbtnt+EmSzWZkVwv5b5zXHWKl15F+nN3c0ek6cNdUcpyS+ZRc3XG/XKorqg66GR3msHc1o4NHgAAsDE4+i1PJp3yvGz+xGKzOiL9+fd254dc90dXbPhEtqMi6RWB22R0VuZcbu8cA6CHq4/xnkH2AqKTdKKISEQ4S97OwvuYafYIj861sRayrMb88J08HQrGwWS2qdK6Jr7Zqn/50bM0PSgoHvArsPqYGdphrmyH2FjVNsa29bO7y9sU1xqLTK7gG18O6Nfu2lzR6yFpgimjMr9PGdXxidgMnuxpbpqonsqmf/bV0ZoKyjuFKyroKqCqp5BqyWGQPY4eBHAr7rn1iWWZFilcKvH7tU0L9dXtY7WOT7ph813rC2U2T9IC1X2SK1ZcyG03B2jWVTTpTSnx1/cz6SR4jktjYzC3c3VbpUHO9hMbl9M3bE+8ojqjnR4dPh5QvFEBBAIOoPIotgowiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICrDpCbSBgmNNpbdI03y4Nc2lHPqWcnSkeHIa8z3gFWXUzRU1PJUTyNjhiYXyPcdA1oGpJ9S0K2pZZUZpm9wv0xcIpH7lLG7/04W8GN9nE+JKwcfiJs29KeMrlsXkNOa43l3o1t2989s9EfeeyNOlHKiaWonkqJ5XyzSOL5HvcS5zidSSTzJK+aIq671EaboERESIiICIiC7dg22qpxmSDHcpnkqbISGQVB1dJR9w73R+HMdnctr6Wogq6aKppZo54JWB8ckbg5r2kaggjmCucatjYXtfrcHqWWi7ulrMelfxZzfSEni5ne3tLfWOOuu0wWO5HMucOtzfa3YunF8rF4GNLnGaf4u2O369/HchF5rVcK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" alt="Caruaru Shopping" style="height:38px;width:auto;flex-shrink:0;border-radius:6px;object-fit:contain;background:#fff;padding:3px;">
+    <div>
+      <h1>Controle de Vagas 2026</h1>
+      <p>Caruaru Shopping · RH</p>
+    </div>
+  </div>
+  <div class="hdr-r">
+    <span class="badge b-blue" id="tsLabel">—</span>
+    <span class="badge b-amber" id="badgeInt">—</span>
+    <span class="badge b-green" id="badgeLoj">—</span>
+    <button class="btn-r" id="btnR" onclick="fetchData()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+        <path d="M21 3v5h-5"/>
+        <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+        <path d="M8 16H3v5"/>
+      </svg>
+      Atualizar
+    </button>
+  </div>
+</header>
+
+<nav>
+  <button class="tab on" onclick="goTab('overview',this)">📊 Geral</button>
+  <button class="tab"    onclick="goTab('internas',this)">🏷️ Internas</button>
+  <button class="tab"    onclick="goTab('lojistas',this)">🛍️ Lojistas</button>
+  <button class="tab"    onclick="goTab('timeline',this)">📅 Cronologia</button>
+</nav>
+
+<div class="content">
+
+<!-- OVERVIEW -->
+<div id="tab-overview" class="sec">
+  <div class="status-bar">
+    <div class="status-dot" id="statusDot"></div>
+    <span id="statusMsg">Carregando...</span>
+    <span style="margin-left:auto;font-family:var(--mono);font-size:.6rem;color:var(--t3)" id="statusTs"></span>
+  </div>
+  <div id="alertDiv" class="alert" style="display:none">
+    <div>⚠️</div>
+    <div>
+      <div class="alert-hd">Vagas com prazo vencido!</div>
+      <div class="alert-sub">Requerem atenção:</div>
+      <div class="alert-items" id="alertItems"></div>
+    </div>
+  </div>
+  <div class="kpis" id="kpis"></div>
+
+  <!-- Empresa + Status lado a lado em desktop, empilhados no mobile -->
+  <div class="g2">
+    <div class="card" style="--ac:var(--blue)">
+      <div class="card-hd">Vagas por Empresa</div>
+      <div class="hbar" id="cEmp"></div>
+    </div>
+    <div class="card" style="--ac:var(--purple)">
+      <div class="card-hd">Status — Internas</div>
+      <div class="donut-wrap">
+        <svg id="donut" width="110" height="110" viewBox="0 0 110 110" style="flex-shrink:0"></svg>
+        <div class="donut-leg" id="donutLeg"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Funil ocupa linha inteira no mobile, depois 3 colunas -->
+  <div class="g1">
+    <div class="card" style="--ac:var(--green)">
+      <div class="card-hd">Funil — Etapa Atual (vagas ativas)</div>
+      <div class="funnel" id="funnel"></div>
+    </div>
+  </div>
+
+  <!-- Recrutadora + Tipo lado a lado em tablet/desktop -->
+  <div class="g2">
+    <div class="card" style="--ac:var(--amber)">
+      <div class="card-hd">Por Recrutadora</div>
+      <div class="hbar" id="cRec"></div>
+    </div>
+    <div class="card" style="--ac:var(--teal)">
+      <div class="card-hd">Tipo de Recrutamento</div>
+      <div class="hbar" id="cTipo"></div>
+    </div>
+  </div>
+
+  <!-- Lojistas -->
+  <div class="g2">
+    <div class="card" style="--ac:var(--pink)">
+      <div class="card-hd">Top Lojas — Lojistas</div>
+      <div class="hbar" id="cLojas"></div>
+    </div>
+    <div class="card" style="--ac:var(--lime)">
+      <div class="card-hd">Status — Lojistas</div>
+      <div class="donut-wrap">
+        <svg id="donutLoj" width="110" height="110" viewBox="0 0 110 110" style="flex-shrink:0"></svg>
+        <div class="donut-leg" id="donutLojLeg"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- INTERNAS -->
+<div id="tab-internas" class="sec" style="display:none">
+  <div class="kpis" id="kpisInt"></div>
+  <div class="card" style="--ac:var(--blue)">
+    <div class="card-hd">Vagas Internas — Todas</div>
+    <div class="tbl-f">
+      <input class="fi" style="width:100%;max-width:220px" placeholder="🔍 Buscar..." id="srchInt" oninput="filterInt()">
+      <select class="fi" id="sEmp"   onchange="filterInt()"><option value="">Todas as empresas</option></select>
+      <select class="fi" id="sSt"    onchange="filterInt()"><option value="">Todos os status</option></select>
+      <select class="fi" id="sPrazo" onchange="filterInt()">
+        <option value="">Todos os prazos</option>
+        <option value="ATRASADA">⚠️ Atrasada</option>
+        <option value="EM DIA">✅ Em Dia</option>
+        <option value="FECHADA">✓ Fechada</option>
+      </select>
+      <select class="fi" id="sRec" onchange="filterInt()"><option value="">Todas as recrutadoras</option></select>
+      <span class="tbl-count" id="cntInt"></span>
+    </div>
+    <div class="tbl-wrap">
+      <table id="tblI">
+        <thead><tr>
+          <th>Empresa</th><th>Vaga</th><th>Setor</th><th>Rec.</th>
+          <th>Abertura</th><th>Fechamento</th><th>Prazo</th><th>Status</th>
+          <th>Etapa</th><th>Solicitante</th><th>Candidato</th><th>Admissão</th>
+        </tr></thead>
+        <tbody id="tbI"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- LOJISTAS -->
+<div id="tab-lojistas" class="sec" style="display:none">
+  <div class="kpis" id="kpisLoj"></div>
+  <div class="card" style="--ac:var(--amber)">
+    <div class="card-hd">Vagas Lojistas — Todas</div>
+    <div class="tbl-f">
+      <input class="fi" style="width:100%;max-width:220px" placeholder="🔍 Buscar..." id="srchLoj" oninput="filterLoj()">
+      <select class="fi" id="sLojSt"  onchange="filterLoj()"><option value="">Todos os status</option></select>
+      <select class="fi" id="sLojRec" onchange="filterLoj()"><option value="">Todas as recrutadoras</option></select>
+      <span class="tbl-count" id="cntLoj"></span>
+    </div>
+    <div class="tbl-wrap">
+      <table id="tblL">
+        <thead><tr>
+          <th>Vaga</th><th>Loja</th><th>Qtd</th><th>Solicitante</th>
+          <th>Tipo</th><th>Solicitação</th><th>Recrutadora</th><th>Prazo</th><th>Status</th><th>Observações</th>
+        </tr></thead>
+        <tbody id="tbL"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- TIMELINE -->
+<div id="tab-timeline" class="sec" style="display:none">
+  <div class="g2">
+    <div class="card" style="--ac:var(--blue)">
+      <div class="card-hd">Cronologia — mais recentes primeiro</div>
+      <div style="max-height:500px;overflow-y:auto">
+        <div class="tl" id="tlBody"></div>
+      </div>
+    </div>
+    <div class="card" style="--ac:var(--green)">
+      <div class="card-hd">Vagas por Setor</div>
+      <div class="prog" id="progSetor"></div>
+    </div>
+  </div>
+</div>
+
+</div></div>
+
+<script>
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwoFtNUekEUJEUW0UzkNSACDopbqgAzAXTYEW_v-5fmJnK57N1qiXE6BxVWy_zUkHc9vQ/exec';
+var REFRESH_INTERVAL = 30 * 60 * 1000;
+
+var FALLBACK_INT = [{"empresa": "SUBCONDOMÍNIO", "vaga": "COMPRADOR(A)", "motivo": "SUBSTITUIÇÃO", "substituto": "ABEL", "tipo": "EXTERNO", "setor": "COMPRAS", "solicitante": "KLEBER PEREIRA", "rec": "MARIANA E BEATRIZ", "pos": "1.0", "abertura": "15/08/2025", "prazo_data": "25/09/2025", "ap": "FECHADA EM ATRASO", "fechamento": "10/02/2026", "status": "FECHADA", "etapa": "COLABORADOR(A) INICIOU NA ÁREA", "obs": "INICIOU NA ÁREA", "candidato": "MARIA LUIZA BEZERRA LEAL ARAUJO", "admissao": "23/02/2026"}, {"empresa": "SUBCONDOMÍNIO", "vaga": "AUXILIAR DE LIMPEZA | PRAÇA", "motivo": "SUBSTITUIÇÃO", "substituto": "MARIA LUIZA", "tipo": "EXTERNO", "setor": "LIMPEZA", "solicitante": "CRISPIM FIGUEIREDO", "rec": "MARIANA E BEATRIZ", "pos": "1.0", "abertura": "10/09/2025", "prazo_data": "21/10/2025", "ap": "FECHADA EM ATRASO", "fechamento": "05/01/2026", "status": "FECHADA", "etapa": "COLABORADOR(A) INICIOU NA ÁREA", "obs": "INICIOU NA ÁREA", "candidato": "MARIA VILMA DA SILVA", "admissao": "20/01/2026"}, {"empresa": "SUBCONDOMÍNIO", "vaga": "AUXILIAR DE LIMPEZA | PRAÇA", "motivo": "SUBSTITUIÇÃO", "substituto": "THAIS", "tipo": "EXTERNO", "setor": "LIMPEZA", "solicitante": "CRISPIM FIGUEIREDO", "rec": "MARIANA E BEATRIZ", "pos": "1.0", "abertura": "13/09/2025", "prazo_data": "26/10/2025", "ap": "FECHADA EM ATRASO", "fechamento": "08/12/2025", "status": "FECHADA", "etapa": "COLABORADOR(A) INICIOU NA ÁREA", "obs": "INICIOU NA ÁREA", "candidato": "VERA LUCIA DE MENEZES SILVA. APROVAÇÃO 05/01/2026", "admissao": "13/01/2026"}, {"empresa": "CORPORATE", "vaga": "ENCARREGADO(A) ADMINISTRATIVO", "motivo": "SUBSTITUIÇÃO", "substituto": "ALINE SOBRINHO", "tipo": "EXTERNO", "setor": "ADMINISTRATIVO", "solicitante": "CLAUDEMIR OLIVEIRA", "rec": "MARIANA", "pos": "1.0", "abertura": "06/10/2025", "prazo_data": "14/11/2025", "ap": "FECHADA EM ATRASO", "fechamento": "15/12/2025", "status": "FECHADA", "etapa": "COLABORADOR(A) INICIOU NA ÁREA", "obs": "INICIOU NA ÁREA", "candidato": "NELSON CAMILO TORQUATO DE OLIVEIRA", "admissao": "05/01/2026"}, {"empresa": "WS PARK", "vaga": "CONTROLADOR(A) DE TRÁFEGO", "motivo": "SUBSTITUIÇÃO", "substituto": "PRISCILA", "tipo": "EXTERNO", "setor": "ESTACIONAMENTO", "solicitante": "MARIA DO CARMO", "rec": "MARIANA", "pos": "1.0", "abertura": "23/10/2025", "prazo_data": "03/12/2025", "ap": "FECHADA NO PRAZO", "fechamento": "27/11/2025", "status": "FECHADA", "etapa": "COLABORADOR(A) INICIOU NA ÁREA", "obs": "INICIOU NA ÁREA", "candidato": "RICARDO CAMORE CAJUEIRO", "admissao": "02/01/2026"}, {"empresa": "WA HOTEL", "vaga": "AUXILIAR DE COZINHA", "motivo": "AUMENTO DE QUADRO", "substituto": "-", "tipo": "EXTERNO", "setor": "COZINHA", "solicitante": "FELIPE SANTHIAGO", "rec": "MARIANA E BEATRIZ", "pos": "1.0", "abertura": "28/10/2025", "prazo_data": "06/12/2025", "ap": "FECHADA EM ATRASO", "fechamento": "28/01/2026", "status": "FECHADA", "etapa": "COLABORADOR(A) INICIOU NA ÁREA", "obs": "INICIOU NA ÁREA", "candidato": "GEILSON FRANCISCO DA SILVA", "admissao": "13/02/2026"}, {"empresa": "WA HOTEL", "vaga": "CAMAREIRA", "motivo": "AUMENTO DE QUADRO", "substituto": "-", "tipo": "EXTERNO", "setor": "GOVERNANÇA", "solicitante": "LUANA RODRIGUES", "rec": "MARIANA", "pos": "1.0", "abertura": "01/11/2025", "prazo_data": "12/12/2025", "ap": "FECHADA EM ATRASO", "fechamento": "15/12/2025", "status": "FECHADA", "etapa": "COLABORADOR(A) INICIOU NA ÁREA", "obs": "INICIOU NA ÁREA", "candidato": "MARIA VALMIRA DA SILVA", "admissao": "13/01/2026"}, {"empresa": "WA HOTEL", "vaga": "CAMAREIRA", "motivo": "AUMENTO DE QUADRO", "substituto": "-", "tipo": "EXTERNO", "setor": "GOVERNANÇA", "solicitante": "LUANA RODRIGUES", "rec": "BEATRIZ", "pos": "1.0", "abertura": "01/11/2025", "prazo_data": "12/12/2025", "ap": "FECHADA EM ATRASO", "fechamento": "06/02/2026", "status": "FECHADA", "etapa": "COLABORADOR(A) INICIOU NA ÁREA", "obs": "INICIOU NA ÁREA", "candidato": "RAFAELA PATRÍCIA FERREIRA DA SILVA", "admissao": "25/02/2026"}, {"empresa": "WA HOTEL", "vaga": "CUMIM", "motivo": "AUMENTO DE QUADRO", "substituto": "-", "tipo": "EXTERNO", "setor": "COZINHA", "solicitante": "LUANA RODRIGUES", "rec": "MARIANA", "pos": "1.0", "abertura": "05/11/2025", "prazo_data": "16/12/2025", "ap": "FECHADA EM ATRASO", "fechamento": "13/01/2026", "status": "FECHADA", "etapa": "COLABORADOR(A) INICIOU NA ÁREA", "obs": "INICIOU NA ÁREA", "candidato": "RAYNARA SWELLYN DA SILVA MELLO", "admissao": "12/02/2026"}, {"empresa": "WA HOTEL", "vaga": "COZINHEIRO(A)", "motivo": "AUMENTO DE QUADRO", "substituto": "-", "tipo": "EXTERNO", "setor": "COZINHA", "solicitante": "FELIPE SANTHIAGO", "rec": "MARIANA", "pos": "1.0", "abertura": "05/11/2025", "prazo_data": "16/12/2025", "ap": "ATRASADA", "fechamento": "", "status": "ABERTA", "etapa": "ENTREVISTA COM GESTOR(A)", "obs": "05/03 - CANDIDATO VICTOR ENTREVISTADO DIA 04. AGUARDANDO RETORNO DE LUANA.  SEM MAIS INSCRITOS NEM ENCAMINHADOS PELO SINE", "candidato": "", "admissao": ""}, {"empresa": "SUBCONDOMÍNIO", "vaga": "AUXILIAR DE LIMPEZA | PRAÇA", "motivo": "SUBSTITUIÇÃO", "substituto": "CARLOS DA SILVA", "tipo": "EXTERNO", "setor": "LIMPEZA", "solicitante": "CRISPIM FIGUEIREDO", "rec": "MARIANA E BEATRIZ", "pos": "1.0", "abertura": "07/11/2025", "prazo_data": "18/12/2025", "ap": "FECHADA EM ATRASO", "fechamento": "13/01/2026", "status": "FECHADA", "etapa": "COLABORADOR(A) INICIOU NA ÁREA", "obs": "INICIOU NA ÁREA", "candidato": "VALERIA ALESSANDRA DE SOUSA", "admissao": "30/01/2026"}, {"empresa": "SUBCONDOMÍNIO", "vaga": "AUXILIAR DE MANUTENÇÃO", "motivo": "SUBSTITUIÇÃO", "substituto": "RISONALDO JOSÉ DA SILVA SANTOS", "tipo": "EXTERNO", "setor": "MANUTENÇÃO SERV GERAIS", "solicitante": "JOSE NOALDO", "rec": "MARIANA E BEATRIZ", "pos": "1.0", "abertura": "11/11/2025", "prazo_data": "21/12/2025", "ap": "FECHADA EM ATRASO", "fechamento": "16/01/2026", "status": "FECHADA", "etapa": "COLABORADOR(A) INICIOU NA ÁREA", "obs": "INICIOU NA ÁREA", "candidato": "LUCAS ALBERTO GALISA DA SILVA", "admissao": "06/02/2026"}, {"empresa": "SUBCONDOMÍNIO", "vaga": "AUXILIAR DE HIGIENIZAÇÃO E CONSERVAÇÃO (HOMEM)", "motivo": "SUBSTITUIÇÃO", "substituto": "", "tipo": "EXTERNO", "setor": "LIMPEZA", "solicitante": "CRISPIM FIGUEIREDO", "rec": "MARIANA", "pos": "1.0", "abertura": "13/11/2025", "prazo_data": "24/12/2025", "ap": "FECHADA EM ATRASO", "fechamento": "05/01/2026", "status": "FECHADA", "etapa": "COLABORADOR(A) INICIOU NA ÁREA", "obs": "INICIOU NA ÁREA", "candidato": "CARLOS HUMBERTO DA SILVA ALVES", "admissao": "21/01/2026"}, {"empresa": "SUBCONDOMÍNIO", "vaga": "ESTAGIÁRIO(A) EM ARQUITETURA E URBANISMO", "motivo": "AUMENTO DE QUADRO", "substituto": "-", "tipo": "EXTERNO", "setor": "PROJETOS", "solicitante": "ANA CAROLINA", "rec": "MARIANA E BEATRIZ", "pos": "1.0", "abertura": "02/12/2025", "prazo_data": "13/01/2026", "ap": "FECHADA NO PRAZO", "fechamento": "23/12/2025", "status": "FECHADA", "etapa": "COLABORADOR(A) INICIOU NA ÁREA", "obs": "INICIOU NA ÁREA", "candidato": "ANNE BEATRIZ GONÇALVES BARBOSA SANTOS", "admissao": "19/01/2026"}, {"empresa": "WA HOTEL", "vaga": "CONFEITEIRO(A) /PASTELEIRO(A)", "motivo": "AUMENTO DE QUADRO", "substituto": "-", "tipo": "EXTERNO", "setor": "COZINHA", "solicitante": "LUANA RODRIGUES", "rec": "MARIANA E BEATRIZ", "pos": "1.0", "abertura": "08/12/2025", "prazo_data": "19/01/2026", "ap": "ATRASADA", "fechamento": "", "status": "ABERTA", "etapa": "EM TRIAGEM", "obs": "12/03 - BIA ESTA DIVULGANDO EM GRUPOS DE EMPREGO E ESTA CONVERSANDO COM UM CANDIDATO, AGUARDANDO A RESPOSTA/ sem nenhuma inscrição na solides/ Bia irá dulgar com as representantes das salas . Thaisa irá solicitar ao merketing arte para divulgar nossas vagas .", "candidato": "", "admissao": ""}, {"empresa": "ASS. DOS LOJISTAS", "vaga": "DIRETOR(A) DE ARTE E DESIGN", "motivo": "SUBSTITUIÇÃO", "substituto": "SUBSTITUIÇÃO", "tipo": "EXTERNO", "setor": "MARKETING", "solicitante": "WALACE COURO", "rec": "MARIANA", "pos": "1.0", "abertura": "08/12/2025", "prazo_data": "19/01/2026", "ap": "FECHADA NO PRAZO", "fechamento": "05/01/2026", "status": "FECHADA", "etapa": "COLABORADOR(A) INICIOU NA ÁREA", "obs": "INICIOU NA ÁREA", "candidato": "ANDERSON DE SOUZA KRUGER", "admissao": "20/01/2026"}, {"empresa": "ASS. DOS LOJISTAS", "vaga": "ANALISTA DE DADOS", "motivo": "AUMENTO DE QUADRO", "substituto": "-", "tipo": "EXTERNO", "setor": "MARKETING", "solicitante": "WALACE COURO", "rec": "MARIANA", "pos": "1.0", "abertura": "08/12/2025", "prazo_data": "19/01/2026", "ap": "ATRASADA", "fechamento": "", "status": "ABERTA", "etapa": "ENTREVISTA COM GESTOR(A)", "obs": "12/03 -", "candidato": "RICARDO BARRETO SOUZA SANTOS", "admissao": ""}, {"empresa": "ASS. DOS LOJISTAS", "vaga": "ANALISTA DE TRADE MARKETING", "motivo": "AUMENTO DE QUADRO", "substituto": "-", "tipo": "EXTERNO", "setor": "MARKETING", "solicitante": "WALACE COURO", "rec": "MARIANA", "pos": "1.0", "abertura": "08/12/2025", "prazo_data": "19/01/2026", "ap": "FECHADA EM ATRASO", "fechamento": "24/02/2026", "status": "FECHADA", "etapa": "COLABORADOR(A) INICIOU NA ÁREA", "obs": "05/03 - ANDRE RECEBEU ENCAMINHAMENTOS. FOI ORIENTADO A ENTREGAR ATÉ DIA 09/03, SEGUNDA. FLAVIA TINHA  INFORMADO QUE  O MESMO IRIA INICIAR DIA 16 OU 17/03. cONFIRMAR COM MILENA", "candidato": "ANDRÉ CHARLES ALVES MARQUES", "admissao": ""}, {"empresa": "CORPORATE", "vaga": "PORTEIRO", "motivo": "AUMENTO DE QUADRO", "substituto": "-", "tipo": "EXTERNO", "setor": "SEGURANÇA", "solicitante": "VANDA E CLAUDEMIR", "rec": "MARIANA", "pos": "1.0", "abertura": "15/12/2025", "prazo_data": "25/01/2026", "ap": "FECHADA NO PRAZO", "fechamento": "23/12/2025", "status": "FECHADA", "etapa": "COLABORADOR(A) INICIOU NA ÁREA", "obs": "INICIOU NA ÁREA", "candidato": "CÍCERO WILLAMY MONTEIRO JÚNIOR", "admissao": "03/01/2026"}, {"empresa": "SUBCONDOMÍNIO", "vaga": "AUXILIAR DE MANUTENÇÃO", "motivo": "SUBSTITUIÇÃO", "substituto": "EDMILSON", "tipo": "EXTERNO", "setor": "MANUTENÇÃO SERV GERAIS", "solicitante": "JOSE NOALDO", "rec": "MARIANA", "pos": "1.0", "abertura": "16/12/2025", "prazo_data": "27/01/2026", "ap": "ATRASADA", "fechamento": "", "status": "ABERTA", "etapa": "EM TRIAGEM", "obs": "12/03 - O CANDIDATO JEAN FOI ENTREVISTADO PRESENCIALMENTE APÓS CONCLUIR A INSCRIÇÃO NA SOLIDES,JA TRABALHOU NA AWA, E NÃO TEMOS UM RETORNO POSITIVO DO CANDIDATO POIS ELE RECLAMAVA DO SALARIO. SEGUIMOS TRIANDO . 3 CANDIDATOS PARA VALIAR  NA SOLIDES", "candidato": "", "admissao": ""}, {"empresa": "SUBCONDOMÍNIO", "vaga": "ASSISTENTE CONTABIL", "motivo": "AUMENTO DE QUADRO", "substituto": "-", "tipo": "EXTERNO", "setor": "CONTABILIDADE", "solicitante": "VALTER", "rec": "MARIANA", "pos": "1.0", "abertura": "22/12/2025", "prazo_data": "02/02/2026", "ap": "CANCELADA", "fechamento": "", "status": "CANCELADA", "etapa": "EM TRIAGEM", "obs": "05/02  - ULTIMA TRIAGEM, SEM NOVOS PERFIS ADERENTES NA SOLIDES, CANDIDATO DIOGO ME ACEITOU NO LINKEDIN E REALIZEI A PROPOSTA, AGUARDANDO RETORNO. 29/01 - MENSAGEM ENVIADA PARA RENATO PARA REAVALIAR A MUDANÇA DO CARHO PARA A SELEÇÃO OU NÃO.", "candidato": "", "admissao": ""}, {"empresa": "SUBCONDOMÍNIO", "vaga": "GERENTE DE OPERAÇÕES", "motivo": "SUBSTITUIÇÃO", "substituto": "CLAUDEMIR OLIVEIRA", "tipo": "EXTERNO", "setor": "OPERAÇÕES", "solicitante": "MARCUS BELARMINO", "rec": "MARIANA", "pos": "1.0", "abertura": "06/01/2026", "prazo_data": "15/02/2026", "ap": "FECHADA NO PRAZO", "fechamento": "13/01/2026", "status": "FECHADA", "etapa": "", "obs": "13/01 - SUPERINTENDENTE INFORMOU QUE O CANDIDATO JOAO MONTEIRO FOI SELECIONADO PARA A VAGA. PROCESSO DE CONTRATAÇÃO PJ COM KLEBER PEREIRA (CONTRATO), DE ACORDO COM FLAVIA DO DP.", "candidato": "JOAO MONTEIRO FILHO", "admissao": "15/01/2025"}, {"empresa": "WA HOTEL", "vaga": "STEWARD: AUXILIAR DE SERVIÇOS GERAIS | COZINHA", "motivo": "SUBSTITUIÇÃO", "substituto": "AMARO VICENTE DA SILVA", "tipo": "EXTERNO", "setor": "COZINHA", "solicitante": "LUANA RODRIGUES", "rec": "MARIANA", "pos": "1.0", "abertura": "20/01/2026", "prazo_data": "05/03/2026", "ap": "EM DIA", "fechamento": "", "status": "EM ADMISSÃO", "etapa": "COLETANDO DOCUMENTOS", "obs": "05/03 - INFORMOU TRAZER OS DOCUMENTOS DIA 05/03, AGUARDANDO.", "candidato": "WESLEY SILVA DE CARVALHO", "admissao": ""}, {"empresa": "WA HOTEL", "vaga": "ENCARREGADO(A) DE EVENTOS E INSTALAÇÕES", "motivo": "AUMENTO DE QUADRO", "substituto": "-", "tipo": "EXTERNO", "setor": "EVENTOS", "solicitante": "LUANA RODRIGUES", "rec": "MARIANA", "pos": "1.0", "abertura": "27/01/2026", "prazo_data": "12/03/2026", "ap": "EM DIA", "fechamento": "", "status": "ABERTA", "etapa": "EM TRIAGEM", "obs": "05/03 - CANDIDATOS ENTREVISTADOS NÃO APROVADOS PELA GERENTE, SELECIONAR PERFIS (NOVOS INSCRITOS) PARA ENTREVISTA.", "candidato": "", "admissao": ""}, {"empresa": "SUBCONDOMÍNIO", "vaga": "ANALISTA FINANCEIRO", "motivo": "SUBSTITUIÇÃO", "substituto": "ANA CAROLINE", "tipo": "EXTERNO", "setor": "FINANCEIRO", "solicitante": "KLEBER PEREIRA", "rec": "MARIANA", "pos": "1.0", "abertura": "28/01/2026", "prazo_data": "15/03/2026", "ap": "FECHADA NO PRAZO", "fechamento": "09/02/2026", "status": "FECHADA", "etapa": "COLABORADOR(A) INICIOU NA ÁREA", "obs": "INICIOU NA ÁREA", "candidato": "AMANDA KELY NEVES DE MOURA SEVERO", "admissao": "20/02/2026"}, {"empresa": "SUBCONDOMÍNIO", "vaga": "BOMBEIRO(A)", "motivo": "AUMENTO DE QUADRO", "substituto": "-", "tipo": "EXTERNO", "setor": "BRIGADA", "solicitante": "SILVIO", "rec": "MARIANA E BEATRIZ", "pos": "1.0", "abertura": "28/01/2026", "prazo_data": "15/03/2026", "ap": "FECHADA NO PRAZO", "fechamento": "23/02/2026", "status": "EM ADMISSÃO", "etapa": "AGUARDANDO DATA DE ADMISSÃO", "obs": "12/02 -  EVANDRO AGUARDANDO DATA DE ADMISSÃO", "candidato": "JOSÉ CARLOS DA SILVA", "admissao": ""}, {"empresa": "SUBCONDOMÍNIO", "vaga": "BOMBEIRO(A)", "motivo": "SUBSTITUIÇÃO", "substituto": "KATARINA GOUVEIA", "tipo": "EXTERNO", "setor": "BRIGADA", "solicitante": "SILVIO", "rec": "MARIANA E BEATRIZ", "pos": "1.0", "abertura": "28/01/2026", "prazo_data": "15/03/2026", "ap": "FECHADA NO PRAZO", "fechamento": "23/02/2026", "status": "EM ADMISSÃO", "etapa": "AGUARDANDO DATA DE ADMISSÃO", "obs": "12/02 -  CARLOS AGUARDANDO DATA DE ADMISSÃO", "candidato": "EVANDRO DOS SANTOS CESAR DE MELO", "admissao": ""}, {"empresa": "SUBCONDOMÍNIO", "vaga": "BOMBEIRO(A)", "motivo": "SUBSTITUIÇÃO", "substituto": "JOAO BATISTA", "tipo": "EXTERNO", "setor": "BRIGADA", "solicitante": "SILVIO", "rec": "BEATRIZ", "pos": "1.0", "abertura": "28/01/2026", "prazo_data": "15/03/2026", "ap": "EM DIA", "fechamento": "", "status": "ABERTA", "etapa": "VALIDAÇÕES INTERNAS", "obs": "12/03 - BIA FEZ DUA ENTREVISTAS COM OS CANDIDATOS JOELSON E WALLISSON, MAS SÓ SEGUIRA COM O CANDIDATO JOELSON, ESTÁ REALIZANDO AS VALIDAÇÕES", "candidato": "", "admissao": ""}, {"empresa": "SUBCONDOMÍNIO", "vaga": "PORTEIRO", "motivo": "SUBSTITUIÇÃO", "substituto": "DERECK ANDREI", "tipo": "EXTERNO", "setor": "PORTARIA", "solicitante": "SILVIO", "rec": "BEATRIZ", "pos": "1.0", "abertura": "28/01/2026", "prazo_data": "15/03/2026", "ap": "EM DIA", "fechamento": "", "status": "ABERTA", "etapa": "VALIDAÇÕES INTERNAS", "obs": "12/03 - .  O CANDIDATO WEVERTON EM ETAPA DE VALIDAÇÕES, DESISTIU DO PROCESO POIS NÃO TERIA DISPONIBILIDADE DE HORARIO E SO COMUNICOU HOJE, BIA FEZ DUAS ENTREVISTAS COM OS CANDIDATOS  LUCAS E ( VINICIUS COLABORADOR INTERNO), ESTÃO EM ETAPA DE VALIDAÇÃO", "candidato": "", "admissao": ""}, {"empresa": "SUBCONDOMÍNIO", "vaga": "PORTEIRO", "motivo": "SUBSTITUIÇÃO", "substituto": "LEUDSON", "tipo": "EXTERNO", "setor": "PORTARIA", "solicitante": "SILVIO", "rec": "BEATRIZ", "pos": "1.0", "abertura": "28/01/2026", "prazo_data": "15/03/2026", "ap": "FECHADA NO PRAZO", "fechamento": "19/02/2026", "status": "EM ADMISSÃO", "etapa": "COLETANDO DOCUMENTOS", "obs": "19/02 - MARCIO APROVADO, ENCAMINHAMENTOS SOLICITADOA O DP, AGUARDANDO", "candidato": "MÁRCIO HENRIQUE FERREIRA DE MELO", "admissao": ""}, {"empresa": "SUBCONDOMÍNIO", "vaga": "PORTEIRO", "motivo": "SUBSTITUIÇÃO", "substituto": "JANAILSON KEVIN", "tipo": "EXTERNO", "setor": "PORTARIA", "solicitante": "SILVIO", "rec": "BEATRIZ", "pos": "1.0", "abertura": "28/01/2026", "prazo_data": "15/03/2026", "ap": "EM DIA", "fechamento": "", "status": "ABERTA", "etapa": "VALIDAÇÕES INTERNAS", "obs": "12/03 - .  O CANDIDATO WEVERTON EM ETAPA DE VALIDAÇÕES, DESISTIU DO PROCESO POIS NÃO TERIA DISPONIBILIDADE DE HORARIO E SO COMUNICOU HOJE, BIA FEZ DUAS ENTREVISTAS COM OS CANDIDATOS  LUCAS E ( VINICIUS COLABORADOR INTERNO), ESTÃO EM ETAPA DE VALIDAÇÃO", "candidato": "", "admissao": ""}, {"empresa": "SUBCONDOMÍNIO", "vaga": "JOVEM APRENDIZ", "motivo": "SUBSTITUIÇÃO", "substituto": "ELOIZA", "tipo": "EXTERNO", "setor": "FINANCEIRO", "solicitante": "ALEXANDRE", "rec": "MARIANA E BEATRIZ", "pos": "1.0", "abertura": "28/01/2026", "prazo_data": "15/03/2026", "ap": "EM DIA", "fechamento": "", "status": "ABERTA", "etapa": "ENTREVISTA COM GESTOR(A)", "obs": "12/03- ALEXANDRE GOSTOU DA CANDIDATA SIMARA E TEMOS MAIS 3 PERFIS PARA ENTREVISTAR  DIA 13/03", "candidato": "", "admissao": ""}, {"empresa": "CORPORATE", "vaga": "RECEPCIONISTA", "motivo": "SUBSTITUIÇÃO", "substituto": "VANDERLEIA", "tipo": "EXTERNO", "setor": "RECEPÇÃO", "solicitante": "NELSON", "rec": "MARIANA", "pos": "1.0", "abertura": "29/01/2026", "prazo_data": "16/03/2026", "ap": "FECHADA NO PRAZO", "fechamento": "24/02/2026", "status": "FECHADA", "etapa": "COLABORADOR(A) INICIOU NA ÁREA", "obs": "INICIOU NA ÁREA", "candidato": "DAYANE STEPHANNIE DA CRUZ", "admissao": "26/02/2026"}, {"empresa": "SUBCONDOMÍNIO", "vaga": "AUXILIAR DE LIMPEZA | PRAÇA", "motivo": "SUBSTITUIÇÃO", "substituto": "ROMERO HELENO", "tipo": "EXTERNO", "setor": "PRAÇA DE ALIMENTAÇÃO", "solicitante": "CRISPIM FIGUEIREDO", "rec": "MARIANA E BEATRIZ", "pos": "1.0", "abertura": "29/01/2026", "prazo_data": "16/03/2026", "ap": "FECHADA NO PRAZO", "fechamento": "24/02/2026", "status": "EM ADMISSÃO", "etapa": "COLETANDO DOCUMENTOS", "obs": "", "candidato": "MARIA DE FÁTIMA DOS SANTOS SOARES", "admissao": ""}, {"empresa": "SUBCONDOMÍNIO", "vaga": "AUXILIAR DE LIMPEZA | PRAÇA", "motivo": "SUBSTITUIÇÃO", "substituto": "FABIANO ARAUJO", "tipo": "EXTERNO", "setor": "PRAÇA DE ALIMENTAÇÃO", "solicitante": "CRISPIM FIGUEIREDO", "rec": "MARIANA E BEATRIZ", "pos": "1.0", "abertura": "30/01/2026", "prazo_data": "17/03/2026", "ap": "FECHADA NO PRAZO", "fechamento": "24/02/2026", "status": "EM ADMISSÃO", "etapa": "COLETANDO DOCUMENTOS", "obs": "", "candidato": "BRUNA RITA MOURA DOS SANTOS TEIXEIRA", "admissao": ""}, {"empresa": "SUBCONDOMÍNIO", "vaga": "AUXILIAR DE LIMPEZA | PRAÇA", "motivo": "SUBSTITUIÇÃO", "substituto": "VITORIA", "tipo": "EXTERNO", "setor": "PRAÇA DE ALIMENTAÇÃO", "solicitante": "CRISPIM FIGUEIREDO", "rec": "MARIANA E BEATRIZ", "pos": "1.0", "abertura": "30/01/2026", "prazo_data": "17/03/2026", "ap": "FECHADA NO PRAZO", "fechamento": "24/02/2026", "status": "CANCELADA", "etapa": "", "obs": "CANDIDATO DESISTIU DO PROCESSO RELATANDO QUE SEGUIU PARA OUTRA OPORTUNIDADE POIS NOSSA ADMISSOOU LEVOU MUITO TEMPO.", "candidato": "ISRAEL MORAES BEZERRA", "admissao": ""}, {"empresa": "SUBCONDOMÍNIO", "vaga": "AUXILIAR DE LIMPEZA | PRAÇA", "motivo": "SUBSTITUIÇÃO", "substituto": "MARCIO AUGUSTO", "tipo": "EXTERNO", "setor": "PRAÇA DE ALIMENTAÇÃO", "solicitante": "CRISPIM FIGUEIREDO", "rec": "MARIANA E BEATRIZ", "pos": "1.0", "abertura": "30/01/2026", "prazo_data": "17/03/2026", "ap": "FECHADA NO PRAZO", "fechamento": "24/02/2026", "status": "EM ADMISSÃO", "etapa": "COLETANDO DOCUMENTOS", "obs": "", "candidato": "VIVIANA MARIA DA SILVA", "admissao": ""}, {"empresa": "SUBCONDOMÍNIO", "vaga": "AUXILIAR DE LIMPEZA | PRAÇA", "motivo": "SUBSTITUIÇÃO", "substituto": "VERA LUCIA", "tipo": "EXTERNO", "setor": "PRAÇA DE ALIMENTAÇÃO", "solicitante": "CRISPIM FIGUEIREDO", "rec": "MARIANA E BEATRIZ", "pos": "1.0", "abertura": "30/01/2026", "prazo_data": "17/03/2026", "ap": "FECHADA NO PRAZO", "fechamento": "24/02/2026", "status": "CANCELADA", "etapa": "", "obs": "CANDIDATA DESSITIU DO PROCESSO DE CONTRATAÇÃO RELATANDO QUE PASSOU EM CONCURSO PÚBLICO", "candidato": "ANA MARIA SILVA DOS SANTOS", "admissao": ""}, {"empresa": "WA EMPREENDIM.", "vaga": "EXECUTIVO(A) DE MERCHANDISING", "motivo": "AUMENTO DE QUADRO", "substituto": "-", "tipo": "EXTERNO", "setor": "COMERCIAL", "solicitante": "MARCUS BELARMINO", "rec": "MARIANA", "pos": "1.0", "abertura": "02/02/2026", "prazo_data": "18/03/2026", "ap": "FECHADA NO PRAZO", "fechamento": "24/02/2026", "status": "FECHADA", "etapa": "COLABORADOR(A) INICIOU NA ÁREA", "obs": "INICIOU NA ÁREA", "candidato": "MARIA OTACÍLIA PIRES RAPOSO DE OLIVEIRA", "admissao": "02/03/2026"}, {"empresa": "SUBCONDOMÍNIO", "vaga": "AUXILIAR DE COMPRAS", "motivo": "SUBSTITUIÇÃO", "substituto": "CAIO CÉSAR", "tipo": "EXTERNO", "setor": "COMPRAS", "solicitante": "KLEBER PEREIRA", "rec": "MARIANA", "pos": "1.0", "abertura": "10/02/2026", "prazo_data": "26/03/2026", "ap": "FECHADA NO PRAZO", "fechamento": "26/02/2026", "status": "FECHADA", "etapa": "COLABORADOR(A) INICIOU NA ÁREA", "obs": "INICIOU NA ÁREA", "candidato": "FERNANDO LEMUEL GOMES VILA VERDE", "admissao": "03/03/2026"}, {"empresa": "WA HOTEL", "vaga": "AUXILIAR DE SERVIÇOS GERAIS", "motivo": "SUBSTITUIÇÃO", "substituto": "CICERO MARCIO", "tipo": "EXTERNO", "setor": "LIMPEZA", "solicitante": "LUANA RODRIGUES", "rec": "MARIANA", "pos": "1.0", "abertura": "20/02/2026", "prazo_data": "02/04/2026", "ap": "EM DIA", "fechamento": "", "status": "ABERTA", "etapa": "EM ENTREVISTA", "obs": "05/03 - ENTREVISTAS AGENDADAS PARA REALIZAR DIA 09 SEGUNDA.", "candidato": "", "admissao": ""}, {"empresa": "SUBCONDOMÍNIO", "vaga": "RECEPCIONISTA", "motivo": "SUBSTITUIÇÃO", "substituto": "VITORIA", "tipo": "MISTO", "setor": "RECEPÇÃO", "solicitante": "KLEBER PEREIRA", "rec": "MARIANA", "pos": "1.0", "abertura": "23/02/2026", "prazo_data": "04/04/2026", "ap": "FECHADA NO PRAZO", "fechamento": "27/02/2026", "status": "FECHADA", "etapa": "COLABORADOR(A) INICIOU NA ÁREA", "obs": "INICIOU NA ÁREA", "candidato": "ISABEL BEATRIZ MARTINS CUNHA", "admissao": "02/03/2026"}, {"empresa": "SUBCONDOMÍNIO", "vaga": "JOVEM APRENDIZ", "motivo": "SUBSTITUIÇÃO", "substituto": "NATALY", "tipo": "EXTERNO", "setor": "FINANCEIRO", "solicitante": "ALEXANDRE", "rec": "MARIANA E BEATRIZ", "pos": "1.0", "abertura": "23/02/2026", "prazo_data": "04/04/2026", "ap": "EM DIA", "fechamento": "", "status": "ABERTA", "etapa": "VALIDAÇÕES INTERNAS", "obs": "05/03 -  REALIZAR PARECER DE CANDIDATA ENTREVISTADA DIA 04.", "candidato": "", "admissao": ""}, {"empresa": "SUBCONDOMÍNIO", "vaga": "JOVEM APRENDIZ", "motivo": "SUBSTITUIÇÃO", "substituto": "FERNANDO", "tipo": "EXTERNO", "setor": "FINANCEIRO", "solicitante": "ALEXANDRE", "rec": "MARIANA E BEATRIZ", "pos": "1.0", "abertura": "26/02/2026", "prazo_data": "08/04/2026", "ap": "EM DIA", "fechamento": "", "status": "ABERTA", "etapa": "VALIDAÇÕES INTERNAS", "obs": "05/03 -  REALIZAR PARECER DE CANDIDATA ENTREVISTADA DIA 04.", "candidato": "", "admissao": ""}, {"empresa": "SUBCONDOMÍNIO", "vaga": "AUXILIAR DE TI", "motivo": "SUBSTITUIÇÃO", "substituto": "IAGO", "tipo": "MISTO", "setor": "TI", "solicitante": "EDUARDO NÓBREGA", "rec": "MARIANA", "pos": "1.0", "abertura": "27/02/2026", "prazo_data": "09/04/2026", "ap": "EM DIA", "fechamento": "", "status": "ABERTA", "etapa": "EM TRIAGEM", "obs": "12/03 VAGA APROVAGA DIA 27/02 ESTAMOS TRIANDO PERFIS PARA MARCAR ENTREVISTA PARA SEGUNDA, 16/03", "candidato": "", "admissao": ""}, {"empresa": "SUBCONDOMÍNIO", "vaga": "ESTÁGIO EM PSICOLOGIA", "motivo": "SUBSTITUIÇÃO", "substituto": "LETÍCIA", "tipo": "EXTERNO", "setor": "RECURSOS HUMANOS", "solicitante": "THAISA NASCIMENTO", "rec": "MARIANA", "pos": "1.0", "abertura": "27/02/2026", "prazo_data": "09/04/2026", "ap": "EM DIA", "fechamento": "", "status": "CANCELADA", "etapa": "", "obs": "", "candidato": "", "admissao": ""}, {"empresa": "SUBCONDOMÍNIO", "vaga": "JOVEM APRENDIZ", "motivo": "SUBSTITUIÇÃO", "substituto": "ANA CLARA", "tipo": "EXTERNO", "setor": "ARQUIVOS", "solicitante": "EDUARDO NOBREGA", "rec": "MARIANA E BEATRIZ", "pos": "1.0", "abertura": "27/02/2026", "prazo_data": "09/04/2026", "ap": "EM DIA", "fechamento": "", "status": "ABERTA", "etapa": "VALIDAÇÕES INTERNAS", "obs": "13/03 - DOIS CANDIDATOS ENTREVISTADOS HOJE POR BIA CAIO E DIEGO, AGORA ESTÃO EM FASE DE VALIDAÇÃO .", "candidato": "", "admissao": ""}, {"empresa": "WA HOTEL", "vaga": "AUXILIAR DE COZINHA", "motivo": "SUBSTITUIÇÃO", "substituto": "", "tipo": "EXTERNO", "setor": "COZINHA", "solicitante": "LUANA RODRIGUES", "rec": "MARIANA", "pos": "1.0", "abertura": "31/02/2026", "prazo_data": "31/03/2026", "ap": "EM DIA", "fechamento": "13/03/2026", "status": "EM ADMISSÃO", "etapa": "AGUARDANDO DP ANEXAR ENCAMINHAMENTOS", "obs": "16/03- AGUARDANDO DP ENTREGAR ENCAMINHAMENTOS", "candidato": "", "admissao": ""}, {"empresa": "SUBCONDOMÍNIO", "vaga": "ESTÁGIO EM ARQUITETURA", "motivo": "SUBSTITUIÇÃO", "substituto": "ANNE", "tipo": "EXTERNO", "setor": "ARQUITETURA", "solicitante": "ANA CAROLINE", "rec": "MARIANA", "pos": "1.0", "abertura": "02/03/2026", "prazo_data": "10/04/2026", "ap": "EM DIA", "fechamento": "12/03/2026", "status": "EM ADMISSÃO", "etapa": "AGUARDANDO DP ANEXAR ENCAMINHAMENTOS", "obs": "16/03 - AGUARDANDO DP ENTREGAR ENCAMINHAMENTOS.", "candidato": "", "admissao": ""}, {"empresa": "SUBCONDOMÍNIO", "vaga": "JOVEM APRENDIZ", "motivo": "SUBSTITUIÇÃO", "substituto": "ISABEL", "tipo": "EXTERNO", "setor": "RECURSOS HUMANOS", "solicitante": "THAISA NASCIMENTO", "rec": "MARIANA E BEATRIZ", "pos": "1.0", "abertura": "03/03/2026", "prazo_data": "12/04/2026", "ap": "EM DIA", "fechamento": "12/03/2026", "status": "EM ADMISSÃO", "etapa": "GESTOR(A) REGISTRANDO APROVAÇÃO", "obs": "AGUARDANDO DP ENTREGAR ENCAMINHAMENTOS.", "candidato": "IASMIN GOMES DA SILVA", "admissao": ""}, {"empresa": "WS PARK", "vaga": "CONTROLADOR(A) DE TRÁFEGO", "motivo": "SUBSTITUIÇÃO", "substituto": "ANTONIO", "tipo": "", "setor": "ESTACIONAMENTO", "solicitante": "MARIA DO CARMO", "rec": "", "pos": "1.0", "abertura": "", "prazo_data": "", "ap": "", "fechamento": "", "status": "REPROVADA", "etapa": "", "obs": "", "candidato": "", "admissao": ""}, {"empresa": "WS PARK", "vaga": "CONTROLADOR(A) DE TRÁFEGO", "motivo": "SUBSTITUIÇÃO", "substituto": "RICARDO", "tipo": "", "setor": "ESTACIONAMENTO", "solicitante": "MARIA DO CARMO", "rec": "", "pos": "1.0", "abertura": "", "prazo_data": "", "ap": "", "fechamento": "", "status": "REPROVADA", "etapa": "", "obs": "", "candidato": "", "admissao": ""}, {"empresa": "SUBCONDOMÍNIO", "vaga": "AUXILIAR DE LIMPEZA | EXTERNA", "motivo": "AUMENTO DE QUADRO", "substituto": "", "tipo": "", "setor": "LIMPEZA EXTERNA", "solicitante": "CRISPIM FIGUEIREDO", "rec": "", "pos": "1.0", "abertura": "", "prazo_data": "", "ap": "", "fechamento": "", "status": "SERÁ SOLICITADA", "etapa": "", "obs": "", "candidato": "", "admissao": ""}, {"empresa": "SUBCONDOMÍNIO", "vaga": "AUXILIAR DE LIMPEZA | PATINADOR", "motivo": "AUMENTO DE QUADRO", "substituto": "", "tipo": "", "setor": "PATINAÇÃO", "solicitante": "CRISPIM FIGUEIREDO", "rec": "", "pos": "1.0", "abertura": "", "prazo_data": "", "ap": "", "fechamento": "", "status": "SERÁ SOLICITADA", "etapa": "", "obs": "", "candidato": "", "admissao": ""}, {"empresa": "SUBCONDOMÍNIO", "vaga": "AUXILIAR DE LIMPEZA | PRAÇA", "motivo": "AUMENTO DE QUADRO", "substituto": "", "tipo": "", "setor": "PRAÇA DE ALIMENTAÇÃO", "solicitante": "CRISPIM FIGUEIREDO", "rec": "", "pos": "1.0", "abertura": "", "prazo_data": "", "ap": "", "fechamento": "", "status": "SERÁ SOLICITADA", "etapa": "", "obs": "", "candidato": "", "admissao": ""}, {"empresa": "SUBCONDOMÍNIO", "vaga": "JOVEM APRENDIZ", "motivo": "SUBSTITUIÇÃO", "substituto": "SINARA", "tipo": "EXTERNO", "setor": "AUDITORIA", "solicitante": "MEIRELE", "rec": "MARIANA E BEATRIZ", "pos": "1.0", "abertura": "04/03/2026", "prazo_data": "14/04/2026", "ap": "EM DIA", "fechamento": "", "status": "ABERTA", "etapa": "", "obs": "12/03- ENTREVISTAS MARCADAS PARA 13/03", "candidato": "", "admissao": ""}, {"empresa": "SUBCONDOMÍNIO", "vaga": "AUXILIAR DE LIMPEZA | PRAÇA", "motivo": "SUBSTITUIÇÃO", "substituto": "VERA LUCIA", "tipo": "EXTERNO", "setor": "PRAÇA DE ALIMENTAÇÃO", "solicitante": "CRISPIM FIGUEIREDO", "rec": "MARIANA E BEATRIZ", "pos": "1.0", "abertura": "12/03/2026", "prazo_data": "22/04/2026", "ap": "EM DIA", "fechamento": "", "status": "ABERTA", "etapa": "EM TRIAGEM", "obs": "", "candidato": "", "admissao": ""}, {"empresa": "WA HOTEL", "vaga": "ENCARREGADO DE MANUTENÇÃO E SUPORTE OPERACIONAL", "motivo": "AUMENTO DE QUADRO", "substituto": "", "tipo": "EXTERNO", "setor": "OPERAÇÃO", "solicitante": "LUANA RODRIGUES", "rec": "MARIANA", "pos": "1.0", "abertura": "12/03/2026", "prazo_data": "22/04/2026", "ap": "FECHADA NO PRAZO", "fechamento": "12/03/2026", "status": "EM ADMISSÃO", "etapa": "COLETANDO DOCUMENTOS", "obs": "16/03 - ENCAMINHAMENTOS ENTREGUES. FOI ORIENTADO A ENTREGAR TUDO ATÉ DIA 18, QUARTA FEIRA.", "candidato": "JACKSON MANOEL DOS SANTOS SILVA", "admissao": ""}, {"empresa": "SUBCONDOMÍNIO", "vaga": "AUXILIAR DE LIMPEZA | PRAÇA", "motivo": "SUBSTITUIÇÃO", "substituto": "VITORIA", "tipo": "EXTERNO", "setor": "PRAÇA DE ALIMENTAÇÃO", "solicitante": "CRISPIM FIGUEIREDO", "rec": "MARIANA E BEATRIZ", "pos": "1.0", "abertura": "16/03/2026", "prazo_data": "24/03/2026", "ap": "EM DIA", "fechamento": "", "status": "ABERTA", "etapa": "EM TRIAGEM", "obs": "", "candidato": "", "admissao": ""}];
+var FALLBACK_LOJ = [{"vaga": "ATENDENTE", "qtd": "1.0", "loja": "MILK CREAMERY", "solicitante": "TALLIANE", "tipo": "APENAS TRIAGEM", "abertura": "12/08/2025", "status": "CANCELADA", "rec": "LETICIA GABRIELLE", "ap": "ATRASADA", "obs": "(VAGA 1) 12 PERFIS ENVIADOS. VAGA ENCERRADA", "etapa": "", "candidato": ""}, {"vaga": "ATENDENTE", "qtd": "1.0", "loja": "MILK CREAMERY", "solicitante": "TALLIANE", "tipo": "APENAS TRIAGEM", "abertura": "12/08/2025", "status": "CANCELADA", "rec": "LETICIA GABRIELLE", "ap": "ATRASADA", "obs": "(VAGA 1) 12 PERFIS ENVIADOS. VAGA ENCERRADA", "etapa": "", "candidato": ""}, {"vaga": "ATENDENTE", "qtd": "1.0", "loja": "MOMMY BROWNIE", "solicitante": "VALDENE SILVA", "tipo": "APENAS TRIAGEM", "abertura": "24/09/2025", "status": "CANCELADA", "rec": "LETICIA GABRIELLE", "ap": "NO PRAZO", "obs": "7 PERFIS ENVIADOS. UMA CANDIDATA EM TESTE, i", "etapa": "", "candidato": ""}, {"vaga": "VENDEDOR", "qtd": "1.0", "loja": "CHINELOS PRIME ( QUIOSQUE )", "solicitante": "DÉBORA AYANNE", "tipo": "APENAS TRIAGEM", "abertura": "16/10/2025", "status": "FECHADA", "rec": "LETICIA GABRIELLE", "ap": "NO PRAZO", "obs": "12 CURRICULOS ENVIADOS. PEDIR DEVOLUTIVA 13/01/ GERENTE DE FÉRIAS VOLTA 19/01/ PEDI RETORNO 26/01 / UMA CANDIDATA EM TESTE / COBRAR RETORNO 09/02/ ACANDIDATA NÃO PASSOU NO TESTE", "etapa": "", "candidato": ""}, {"vaga": "ATENDENTE", "qtd": "1.0", "loja": "GIRAFFAS", "solicitante": "ASTRIDDY", "tipo": "APENAS TRIAGEM", "abertura": "28/10/2025", "status": "CANCELADA", "rec": "LETICIA GABRIELLE", "ap": "NO PRAZO", "obs": "(VAGA 1) 4 PERFIS ENTREGUES / VAGA CANCELADA", "etapa": "", "candidato": ""}, {"vaga": "ATENDENTE", "qtd": "1.0", "loja": "GIRAFFAS", "solicitante": "ASTRIDDY", "tipo": "APENAS TRIAGEM", "abertura": "28/10/2025", "status": "CANCELADA", "rec": "LETICIA GABRIELLE", "ap": "NO PRAZO", "obs": "(VAGA 1) 4 PERFIS ENTREGUES / VAGA CANCELADA", "etapa": "", "candidato": ""}, {"vaga": "CAIXA", "qtd": "1.0", "loja": "GIRAFFAS", "solicitante": "ASTRIDDY", "tipo": "APENAS TRIAGEM", "abertura": "28/10/2025", "status": "CANCELADA", "rec": "LETICIA GABRIELLE", "ap": "NO PRAZO", "obs": "(VAGA 1) 4 PERFIS ENTREGUES / VAGA CANCELADA", "etapa": "", "candidato": ""}, {"vaga": "CAIXA", "qtd": "1.0", "loja": "GIRAFFAS", "solicitante": "ASTRIDDY", "tipo": "APENAS TRIAGEM", "abertura": "28/10/2025", "status": "CANCELADA", "rec": "LETICIA GABRIELLE", "ap": "NO PRAZO", "obs": "(VAGA 1) 4 PERFIS ENTREGUES / VAGA CANCELADA", "etapa": "", "candidato": ""}, {"vaga": "AUXILIAR DE COZINHA", "qtd": "1.0", "loja": "QUIOSQUE BRAHMA", "solicitante": "BETÂNIA HONORATO", "tipo": "APENAS TRIAGEM", "abertura": "03/11/2025", "status": "CANCELADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "6 CURRÍCULOS ENVIADOS/ AGUARDANDO RETORNO  DOS PERFIS ENVIADOS /  AGUARDANDO RETORNO 03/03 DE PERFIS ENCAMINHADOS", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "AUXILIAR DE COZINHA", "qtd": "1.0", "loja": "QUIOSQUE BRAHMA", "solicitante": "BETÂNIA HONORATO", "tipo": "APENAS TRIAGEM", "abertura": "03/11/2025", "status": "CANCELADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "4 CURRÍCULOS ENVIADOS AGUARDANDO RETORNO  DOS PERFIS ENVIADOS /   AGUARDANDO RETORNO 03/03 DE PERFIS ENCAMINHADOS", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "CAIXA", "qtd": "1.0", "loja": "QUIOSQUE BRAHMA", "solicitante": "BETÂNIA HONORATO", "tipo": "APENAS TRIAGEM", "abertura": "03/11/2025", "status": "CANCELADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "5 PERFIL ENCAMINHADO/ SEM RETORNO 22/01 AGUARDANDO RETORNO  DOS PERFIS ENVIADOS/  COBRAR RETORNO 02/03", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "CAIXA", "qtd": "1.0", "loja": "QUIOSQUE BRAHMA", "solicitante": "BETÂNIA HONORATO", "tipo": "APENAS TRIAGEM", "abertura": "03/11/2025", "status": "CANCELADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "4 PERFIL ENCAMINHADO/  SEM RETORNO 22/01 AGUARDANDO RETORNO  DOS PERFIS ENVIADOS,/ COBRAR RETORNO 02/03", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "AUXILIAR DE LIMPEZA", "qtd": "1.0", "loja": "JOÃO PIZZA", "solicitante": "ANNE GOMES", "tipo": "PROCESSO SELETIVO", "abertura": "05/11/2025", "status": "CANCELADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "3 CURRÍCULOS ENCAMINHADOS. VAGA CANCELADA SEM RETRORNO.", "etapa": "", "candidato": ""}, {"vaga": "AUXILIAR DE PRODUÇÃO", "qtd": "1.0", "loja": "JOÃO PIZZA", "solicitante": "ANNE GOMES", "tipo": "PROCESSO SELETIVO", "abertura": "05/11/2025", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "VAGA 1: 3 PERFIS ENVIADOS / COBRAR RETORNO 09/02", "etapa": "", "candidato": ""}, {"vaga": "AUXILIAR DE PRODUÇÃO", "qtd": "1.0", "loja": "JOÃO PIZZA", "solicitante": "ANNE GOMES", "tipo": "PROCESSO SELETIVO", "abertura": "05/11/2025", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "VAGA 2: 5 PERFIS ENVIADOS / COBRAR RETORNO 02/03", "etapa": "", "candidato": ""}, {"vaga": "ATENDENTE", "qtd": "1.0", "loja": "JOÃO PIZZA", "solicitante": "ANNE GOMES", "tipo": "PROCESSO SELETIVO", "abertura": "05/11/2025", "status": "CANCELADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "VAGA 1: 2 PERFIS ENVIADOS", "etapa": "", "candidato": ""}, {"vaga": "ATENDENTE", "qtd": "1.0", "loja": "JOÃO PIZZA", "solicitante": "ANNE GOMES", "tipo": "PROCESSO SELETIVO", "abertura": "05/11/2025", "status": "CANCELADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "VAGA 2: 2 PERFIS ENVIADOS", "etapa": "", "candidato": ""}, {"vaga": "CONSULTORA INTERNA", "qtd": "1.0", "loja": "WEPINK", "solicitante": "TAINÁ GUERRA (SUBGERENTE)", "tipo": "APENAS TRIAGEM", "abertura": "06/11/2025", "status": "CANCELADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "VAGA 1: 1 CURRÍCULO ENVIADO/ULTIMA TRIAGEM 05/12/ enviar registro de cancelamento de vagas", "etapa": "", "candidato": ""}, {"vaga": "CONSULTORA INTERNA", "qtd": "1.0", "loja": "WEPINK", "solicitante": "TAINÁ GUERRA (SUBGERENTE)", "tipo": "APENAS TRIAGEM", "abertura": "06/11/2025", "status": "CANCELADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "VAGA 2: 1 CURRÍCULO ENVIADO/ULTIMA TRIAGEM 05/12/ COBRAR RETORNO 09/02", "etapa": "", "candidato": ""}, {"vaga": "CONSULTORA INTERNA", "qtd": "1.0", "loja": "WEPINK", "solicitante": "TAINÁ GUERRA (SUBGERENTE)", "tipo": "APENAS TRIAGEM", "abertura": "06/11/2025", "status": "CANCELADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "VAGA 3: 1 CURRÍCULO ENVIADO/ULTIMA TRIAGEM 05/12/ COBRAR RETORNO 09/02", "etapa": "", "candidato": ""}, {"vaga": "AUXILIAR DE LIMPEZA", "qtd": "1.0", "loja": "SMART FIT ACADEMIA", "solicitante": "JANE LIMA", "tipo": "APENAS TRIAGEM", "abertura": "12/11/2025", "status": "CANCELADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "11 CURRÍCULOS ENVIADOS/ AGUARDANDO PROCESSO SELETIVO 22/01", "etapa": "", "candidato": ""}, {"vaga": "CONSULTOR DE VENDAS", "qtd": "1.0", "loja": "OTICAS DINIZ", "solicitante": "DANILO SOUZA", "tipo": "APENAS TRIAGEM", "abertura": "02/12/2025", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "3 PERFIS ENCAMINHADOS", "etapa": "", "candidato": ""}, {"vaga": "CONSULTOR DE VENDAS", "qtd": "1.0", "loja": "OTICAS DINIZ", "solicitante": "DANILO SOUZA", "tipo": "APENAS TRIAGEM", "abertura": "02/12/2025", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "3 PERFIS ENCAMINHADOS", "etapa": "", "candidato": ""}, {"vaga": "CONSULTOR DE VENDAS", "qtd": "1.0", "loja": "OTICAS DINIZ", "solicitante": "DANILO SOUZA", "tipo": "APENAS TRIAGEM", "abertura": "02/12/2025", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "3 PERFIS ENCAMINHADOS", "etapa": "", "candidato": ""}, {"vaga": "ATENDENTE", "qtd": "1.0", "loja": "FROSTY", "solicitante": "BRENO LIMA", "tipo": "APENAS TRIAGEM", "abertura": "09/12/2025", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "3 PERFIS ENVIADOS/   SEM RETORNO 22/01/ SEM RETORNO 19/02", "etapa": "", "candidato": ""}, {"vaga": "ATENDENTE", "qtd": "1.0", "loja": "FROSTY", "solicitante": "BRENO LIMA", "tipo": "APENAS TRIAGEM", "abertura": "09/12/2025", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "3 PERFIS ENVIADOS/   SEM RETORNO 22/01 / SEM RETORNO 19/02", "etapa": "", "candidato": ""}, {"vaga": "ATENDENTE", "qtd": "1.0", "loja": "FROSTY", "solicitante": "BRENO LIMA", "tipo": "APENAS TRIAGEM", "abertura": "09/12/2025", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "3 PERFIS ENVIADOS/   SEM RETORNO 22/01 / SEM RETORNO 19/02", "etapa": "", "candidato": ""}, {"vaga": "RECEPCIONISTA", "qtd": "1.0", "loja": "SR BRAGA BARBEARIA", "solicitante": "VINICIUS ARAGÃO", "tipo": "APENAS TRIAGEM", "abertura": "12/12/2025", "status": "CANCELADA", "rec": "BEATRIZ", "ap": "ATRASADA", "obs": "2 PERFIS ENCAMINHADOS", "etapa": "", "candidato": ""}, {"vaga": "COZINHEIRO (A)", "qtd": "1.0", "loja": "DIVINO FOGÃO", "solicitante": "JOYCE", "tipo": "APENAS TRIAGEM", "abertura": "19/12/2025", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "3 PERFIS ENCAMINHADOS / 13/01 MAS NÃO TIVE RESPOSTA / TRIAR MAIS PERFIS 19/01 / TRIAR DIA  06/02", "etapa": "", "candidato": ""}, {"vaga": "COZINHEIRO (A)", "qtd": "1.0", "loja": "DIVINO FOGÃO", "solicitante": "JOYCE", "tipo": "APENAS TRIAGEM", "abertura": "19/12/2025", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "5 PERFIS ENCAMINHADOS/ TRIAR DIA  06/02", "etapa": "", "candidato": ""}, {"vaga": "VENDEDOR", "qtd": "1.0", "loja": "SELETROS ELETRODOMESTICOS", "solicitante": "MISSILEIDE", "tipo": "APENAS TRIAGEM", "abertura": "22/12/2025", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "2 PERFIL ENVIADO / PEDIR DEVOLUTIVA 13/01 / IRÁ ANALISAR OS PEFRIS / PEDI DEVOLUTIVA 19/01 / VAGA FECHADA NO MOMENTO", "etapa": "", "candidato": ""}, {"vaga": "VENDEDOR", "qtd": "1.0", "loja": "SELETROS ELETRODOMESTICOS", "solicitante": "MISSILEIDE", "tipo": "APENAS TRIAGEM", "abertura": "22/12/2025", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "2 PERFIL ENVIADO / PEDIR DEVOLUTIVA 13/01 / IRÁ ANALISAR OS PEFRIS / PEDI DEVOLUTIVA 19/01 / VAGA FECHADA NO MOMENTO", "etapa": "", "candidato": ""}, {"vaga": "VENDEDOR", "qtd": "1.0", "loja": "SELETROS ELETRODOMESTICOS", "solicitante": "MISSILEIDE", "tipo": "APENAS TRIAGEM", "abertura": "22/12/2025", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "1 PERFIL ENVIADO / PEDIR DEVOLUTIVA 13/01 / IRÁ ANALISAR OS PEFRIS / PEDI DEVOLUTIVA 19/01 / VAGA FECHADA NO MOMENTO", "etapa": "", "candidato": ""}, {"vaga": "VENDEDOR", "qtd": "1.0", "loja": "SELETROS ELETRODOMESTICOS", "solicitante": "MISSILEIDE", "tipo": "APENAS TRIAGEM", "abertura": "22/12/2025", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "1 PERFIL ENVIADO / PEDIR DEVOLUTIVA 13/01 / IRÁ ANALISAR OS PEFRIS / PEDI DEVOLUTIVA 19/01 / VAGA FECHADA NO MOMENTO", "etapa": "", "candidato": ""}, {"vaga": "VENDEDOR", "qtd": "1.0", "loja": "SELETROS ELETRODOMESTICOS", "solicitante": "MISSILEIDE", "tipo": "APENAS TRIAGEM", "abertura": "22/12/2025", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "1 PERFIL ENVIADO / PEDIR DEVOLUTIVA 13/01 / IRÁ ANALISAR OS PEFRIS / PEDI DEVOLUTIVA 19/01 / VAGA FECHADA NO MOMENTO", "etapa": "", "candidato": ""}, {"vaga": "VENDEDOR", "qtd": "1.0", "loja": "SELETROS ELETRODOMESTICOS", "solicitante": "MISSILEIDE", "tipo": "APENAS TRIAGEM", "abertura": "22/12/2025", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "1 PERFIL ENVIADO / PEDIR DEVOLUTIVA 13/01 / IRÁ ANALISAR OS PEFRIS / PEDI DEVOLUTIVA 19/01 / VAGA FECHADA NO MOMENTO", "etapa": "", "candidato": ""}, {"vaga": "VENDEDOR", "qtd": "1.0", "loja": "SELETROS ELETRODOMESTICOS", "solicitante": "MISSILEIDE", "tipo": "APENAS TRIAGEM", "abertura": "22/12/2025", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "1 PERFIL ENVIADO / PEDIR DEVOLUTIVA 13/01 / IRÁ ANALISAR OS PEFRIS / PEDI DEVOLUTIVA 19/01 / VAGA FECHADA NO MOMENTO", "etapa": "", "candidato": ""}, {"vaga": "VENDEDOR DE TELEFONIA", "qtd": "1.0", "loja": "SELETROS ELETRODOMESTICOS", "solicitante": "MISSILEIDE", "tipo": "APENAS TRIAGEM", "abertura": "22/12/2025", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "1 PERFIL ENVIADO / AGUARDANDO PROCESSO SELETIVO/  SEM RETORNO 22/01 AGUARDANDO A EMPRESA ENTRAR EM CONTATO COM OS PERFIS 26/01 /  SEM RETORNO  03/03", "etapa": "", "candidato": ""}, {"vaga": "VENDEDOR DE TELEFONIA", "qtd": "1.0", "loja": "SELETROS ELETRODOMESTICOS", "solicitante": "MISSILEIDE", "tipo": "APENAS TRIAGEM", "abertura": "22/12/2025", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "1 PERFIL ENVIADO / AGUARDANDO PROCESSO SELETIVO/  SEM RETORNO 22/01AGUARDANDO A EMPRESA ENTRAR EM CONTATO COM OS PERFIS 26/01/ TRIAR DIA  06/02/  SEM RETORNO 03/03", "etapa": "", "candidato": ""}, {"vaga": "OPERADOR DE CAIXA", "qtd": "1.0", "loja": "SELETROS ELETRODOMESTICOS", "solicitante": "MISSILEIDE", "tipo": "APENAS TRIAGEM", "abertura": "22/12/2025", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "1 PERFIL ENVIADO / AGUARDANDO PROCESSO SELETIVO/  SEM RETORNO 22/01 AGUARDANDO A EMPRESA ENTRAR EM CONTATO COM OS PERFIS 26/01 /  SEM RETORNO 03/03", "etapa": "", "candidato": ""}, {"vaga": "OPERADOR DE CAIXA", "qtd": "1.0", "loja": "SELETROS ELETRODOMESTICOS", "solicitante": "MISSILEIDE", "tipo": "APENAS TRIAGEM", "abertura": "22/12/2025", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "1 PERFIL ENVIADO / AGUARDANDO PROCESSO SELETIVO/  SEM RETORNO 22/01 AGUARDANDO A EMPRESA ENTRAR EM CONTATO COM OS PERFIS 06/02/ SEM RETORNO 03/03", "etapa": "", "candidato": ""}, {"vaga": "CONSULTOR(A) COMERCIAL", "qtd": "1.0", "loja": "PODIUM MOTORS", "solicitante": "ALMIR NOGUEIRA", "tipo": "APENAS TRIAGEM", "abertura": "29/12/2025", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "3 PERFIS ENVIADOS / VAGA FECHADA", "etapa": "", "candidato": ""}, {"vaga": "ATENDENTE", "qtd": "1.0", "loja": "MILET", "solicitante": "SEVERINO", "tipo": "APENAS TRIAGEM", "abertura": "05/01/2026", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "2 PERFIL ENVIADO /AGUARDANDO PROCESSO SELETIVO/  SEM RETORNO 19/02", "etapa": "", "candidato": ""}, {"vaga": "VENDEDOR", "qtd": "1.0", "loja": "ACIUM", "solicitante": "ANA MOURA", "tipo": "APENAS TRIAGEM", "abertura": "06/01/2026", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "10 PERFIS ENVIADOS / VAGA FECHADA", "etapa": "", "candidato": ""}, {"vaga": "ASSISTENTE DE LOJA", "qtd": "1.0", "loja": "CENTAURO", "solicitante": "DÉBORA", "tipo": "APENAS TRIAGEM", "abertura": "13/01/2026", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "5 PERFIS ENVIADOS / VAGA FECHADA", "etapa": "", "candidato": ""}, {"vaga": "CONSULTOR DE VENDAS", "qtd": "1.0", "loja": "TIM", "solicitante": "ESTEFANY", "tipo": "APENAS TRIAGEM", "abertura": "16/01/2026", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "3 PERFIS ENVIADOS / COBRAR RETORNO 23/01/FECHADA", "etapa": "", "candidato": ""}, {"vaga": "CONSULTOR DE VENDAS", "qtd": "1.0", "loja": "TIM", "solicitante": "ESTEFANY", "tipo": "APENAS TRIAGEM", "abertura": "16/01/2026", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "1 PERFILENVIADO / COBRAR RETORNO 23/01/ FECHADA", "etapa": "", "candidato": ""}, {"vaga": "ASSISTENTE DE LOJA PCD", "qtd": "1.0", "loja": "RENNER", "solicitante": "VALDSON", "tipo": "APENAS TRIAGEM", "abertura": "19/01/2026", "status": "ABERTA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "3 PERFIL ENVIADO/ COBRAR RETORNO 20/02 / AMBOS NÃO COMPARECERAM, / SEM RETORNO 12/03", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "ASSISTENTE DE LOJA PCD", "qtd": "1.0", "loja": "RENNER", "solicitante": "VALDSON", "tipo": "APENAS TRIAGEM", "abertura": "19/01/2026", "status": "ABERTA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "3 PERFIL ENVIADO / COBRAR RETORNO 20/02 / AMBOS NÃO COMPARECERAM/ /  SEM RETORNO 12/03", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "VENDEDORA", "qtd": "1.0", "loja": "SUELDO'S", "solicitante": "DANY", "tipo": "APENAS TRIAGEM", "abertura": "19/01/2026", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "2 PERFIS ENVIADOS/ / COBRAR RETORNO 23/01 /AGUARDANDO A EMPRESA ENTRAR EM CONTATO COM OS PERFIS 26/01/ COBRAR RETORNO 30/01", "etapa": "", "candidato": ""}, {"vaga": "VENDEDORA", "qtd": "1.0", "loja": "SUELDO'S", "solicitante": "DANY", "tipo": "APENAS TRIAGEM", "abertura": "19/01/2026", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "1 PERFIL ENVIADO /AGUARDANDO A EMPRESA ENTRAR EM CONTATO COM OS PERFIS 26/01/ CORAR RETORNO 30/01", "etapa": "", "candidato": ""}, {"vaga": "COZINHEIRO (A)", "qtd": "1.0", "loja": "GO! PARK", "solicitante": "VINICIUS ARAGÃO", "tipo": "APENAS TRIAGEM", "abertura": "19/01/2026", "status": "CANCELADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "2 PERFIS ENVIADOS", "etapa": "", "candidato": ""}, {"vaga": "RECEPCIONISTA", "qtd": "1.0", "loja": "SR. BRAGA BARBEARIA", "solicitante": "VINICIUS ARAGÃO", "tipo": "APENAS TRIAGEM", "abertura": "19/01/2026", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "3 PERFIS ENVIADOS/ TRIAR PERFIS 29/01 POIS AS CANDIDATAS NÃO COMPARECERAM/ TRIAR DIA  06/02", "etapa": "", "candidato": ""}, {"vaga": "VENDEDOR", "qtd": "1.0", "loja": "WORLD TENNIS", "solicitante": "FLÁVIO", "tipo": "APENAS TRIAGEM", "abertura": "21/01/2026", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "5 PERFIS ENCAMINHADOS / PEDI DEVOLUTIVA 27/01 / UMA PESSOA EM ENTREVISTA CORAR RETORNO 06/02", "etapa": "", "candidato": ""}, {"vaga": "AUXILIAR DE LOJA GERAL", "qtd": "1.0", "loja": "PREÇOLANDIA", "solicitante": "GISELE", "tipo": "APENAS TRIAGEM", "abertura": "21/01/2026", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "2 PERFIL ENVIADO/ COBRAR RETORNO 20/002", "etapa": "", "candidato": ""}, {"vaga": "AUXILIAR DE LOJA GERAL", "qtd": "1.0", "loja": "PREÇOLANDIA", "solicitante": "GISELE", "tipo": "APENAS TRIAGEM", "abertura": "21/01/2026", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "3 PERFIL ENVIADO / COBRAR RETORNO 20/02", "etapa": "", "candidato": ""}, {"vaga": "AUXILIAR DE LOJA GERAL", "qtd": "1.0", "loja": "PREÇOLANDIA", "solicitante": "GISELE", "tipo": "APENAS TRIAGEM", "abertura": "21/01/2026", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "40PERFIL ENVIADO / COBRAR RETORNO 20/02", "etapa": "", "candidato": ""}, {"vaga": "AUXILIAR DE LOJA GERAL", "qtd": "1.0", "loja": "PREÇOLANDIA", "solicitante": "GISELE", "tipo": "APENAS TRIAGEM", "abertura": "21/01/2026", "status": "ABERTA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "1 PERFIL ENVIADO / COBRAR RETORNO 30/01 / ENVIAR MAIS PERFIS 06/02 /  3 PERFIS ENVIADOS / 12/03 SEM RETORNO/ SEM RETORNO 18/03", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "OPERADOR DE CAIXA", "qtd": "1.0", "loja": "PREÇOLANDIA", "solicitante": "GISELE", "tipo": "APENAS TRIAGEM", "abertura": "21/01/2026", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "2 PERFIL ENVIADO / COBRAR RETORNO 30/01", "etapa": "", "candidato": ""}, {"vaga": "OPERADOR DE CAIXA", "qtd": "1.0", "loja": "PREÇOLANDIA", "solicitante": "GISELE", "tipo": "APENAS TRIAGEM", "abertura": "21/01/2026", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "1 PERFIL ENVIADO / COBRAR RETORNO 30/01 / ENVIAR MAIS PERFIS 06/02 /  3 PERFIS ENVIADOS NO DIA 13/02", "etapa": "", "candidato": ""}, {"vaga": "ATENDENTE", "qtd": "1.0", "loja": "CASINHA BRANCA", "solicitante": "EMANUELA", "tipo": "APENAS TRIAGEM", "abertura": "22/01/2026", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "4 PERFIS ENVIADOS / COBRAR RETORNO  02/03/ SEM RETORNO 26/02/ CANDIDATOS EM TESTE, FOI COMUNICADO O FECHAMENTO 12/03", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "ATENDENTE", "qtd": "1.0", "loja": "CASINHA BRANCA", "solicitante": "EMANUELA", "tipo": "APENAS TRIAGEM", "abertura": "22/01/2026", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "4 PERFIS ENVIADOS / COBRAR RETORNO  02/03 / SEM RETORNO 26/02/ CANDIDATOS EM TESTE, FOI COMUNICADO O FECHAMENTO 12/03", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "VENDEDORA", "qtd": "1.0", "loja": "TOUTI", "solicitante": "PATRÍCIA", "tipo": "APENAS TRIAGEM", "abertura": "23/01/2026", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "3 PERFIS ENCAMINHADOS / AGUARDANDO RETORNO 06/02/ EM ENTREVISTA 26/02/ FOI COMUNICADO O FECHAMENTO DIA 12/03", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "VENDEDORA", "qtd": "1.0", "loja": "TOUTI", "solicitante": "PATRÍCIA", "tipo": "APENAS TRIAGEM", "abertura": "23/01/2026", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "4 PERFIS ENCAMINHADOS / EM ENTREVISTA 26/02 / FOI COMUNICADO O FECHAMENTO DIA 12/03", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "VENDEDORA", "qtd": "1.0", "loja": "TOUTI", "solicitante": "PATRÍCIA", "tipo": "APENAS TRIAGEM", "abertura": "23/01/2026", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "5 PERFIS ENCAMINHADOS / EM ENTREVISTA 26/02 / FOI COMUNICADO O FECHAMENTO DIA 12/03", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "VENDEDORA", "qtd": "1.0", "loja": "TOUTI", "solicitante": "PATRÍCIA", "tipo": "APENAS TRIAGEM", "abertura": "23/01/2026", "status": "ABERTA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "6 PERFIS ENCAMINHADOS / EM ENTREVISTA 26/02/ 3 VAGAS FECHADAS E FALTA 1  TRIAR 13/03", "etapa": "EM TRIAGEM", "candidato": ""}, {"vaga": "COZINHEIRA", "qtd": "1.0", "loja": "GIRAFFAS", "solicitante": "ASTRIDDY", "tipo": "APENAS TRIAGEM", "abertura": "26/01/2026", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "2 PERFIS ENCAMINHADOS / EM ENTREVISTA 26/02", "etapa": "", "candidato": ""}, {"vaga": "COZINHEIRA", "qtd": "1.0", "loja": "GIRAFFAS", "solicitante": "ASTRIDDY", "tipo": "APENAS TRIAGEM", "abertura": "26/01/2026", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "2 PERFIS ENCAMINHADOS", "etapa": "", "candidato": ""}, {"vaga": "CHAPEIRO", "qtd": "1.0", "loja": "GIRAFFAS", "solicitante": "ASTRIDDY", "tipo": "APENAS TRIAGEM", "abertura": "26/01/2026", "status": "ABERTA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "1 PERFIL ENCAMINHADO/ SEM RETORNO 12/03", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "CHAPEIRO", "qtd": "1.0", "loja": "GIRAFFAS", "solicitante": "ASTRIDDY", "tipo": "APENAS TRIAGEM", "abertura": "26/01/2026", "status": "ABERTA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "1 PERFIL ENCAMINHADO / SEM RETORNO 12/03", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "CAIXA", "qtd": "1.0", "loja": "GIRAFFAS", "solicitante": "ASTRIDDY", "tipo": "APENAS TRIAGEM", "abertura": "26/01/2026", "status": "ABERTA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "2 PERFIS ENCAMINHADOS / SEM RETORNO 12/03", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "CAIXA", "qtd": "1.0", "loja": "GIRAFFAS", "solicitante": "ASTRIDDY", "tipo": "APENAS TRIAGEM", "abertura": "26/01/2026", "status": "ABERTA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "2 PERFIS ENCAMINHADOS / SEM RETORNO 12/03", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "RECEPCIONISTA", "qtd": "1.0", "loja": "SMART FIT", "solicitante": "JANE", "tipo": "APENAS TRIAGEM", "abertura": "26/01/2026", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "1 PERFIL ENVIADO/ AGUARDANDO RETORNO 06/02  / SEM RETORNO 20/02  / SEM RETORNO 26/02", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "ATENDENTE", "qtd": "1.0", "loja": "DALENA", "solicitante": "ALEXANDRE", "tipo": "APENAS TRIAGEM", "abertura": "29/01/2026", "status": "FECHADA", "rec": "MARIANA", "ap": "NO PRAZO", "obs": "2 PERFIS ENCAMINHADOS / AGUARDANDO RETORNO 12/03 / VAGA FECHADA, RETORNOU 18/03", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "ATENDENTE", "qtd": "1.0", "loja": "DALENA", "solicitante": "ALEXANDRE", "tipo": "APENAS TRIAGEM", "abertura": "29/01/2026", "status": "FECHADA", "rec": "MARIANA", "ap": "NO PRAZO", "obs": "2 PERFIS ENCAMINHADOS / AGUARDANDO RETORNO 12/03 / VAGA FECHADA, RETORNOU 18/03", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "ATENDENTE", "qtd": "1.0", "loja": "DALENA", "solicitante": "ALEXANDRE", "tipo": "APENAS TRIAGEM", "abertura": "29/01/2026", "status": "FECHADA", "rec": "MARIANA", "ap": "NO PRAZO", "obs": "2 PERFIS ENCAMINHADOS / AGUARDANDO RETORNO 12/03  / VAGA FECHADA, RETORNOU 18/03", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "ATENDENTE", "qtd": "1.0", "loja": "DALENA", "solicitante": "ALEXANDRE", "tipo": "APENAS TRIAGEM", "abertura": "29/01/2026", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "2 PERFIS ENVIADOS / AGUARDANDO RETORNO 12/03/ VAGA FECHADA, RETORNOU 18/03", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "ESTOQUISTA", "qtd": "1.0", "loja": "SELETROS ELETRODOMESTICOS", "solicitante": "MISSILEIDE", "tipo": "APENAS TRIAGEM", "abertura": "30/01/2026", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "1 PERFIL ENVIADO /AAGUARDANDO PROCESSO SELETIVO/  SEM RETORNO 22/01/ AGUARDANDO A EMPRESA ENTRAR EM CONTATO COM OS PERFIS 26/01/  SEM RETORNO 03/03", "etapa": "", "candidato": ""}, {"vaga": "ESTOQUISTA", "qtd": "1.0", "loja": "SELETROS ELETRODOMESTICOS", "solicitante": "MISSILEIDE", "tipo": "APENAS TRIAGEM", "abertura": "30/01/2026", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "1 PERFIL ENVIADO /AGUARDANDO PROCESSO SELETIVO/  SEM RETORNO 22/01AGUARDANDO A EMPRESA ENTRAR EM CONTATO COM OS PERFIS 26/01 /  SEM RETORNO 03/03", "etapa": "", "candidato": ""}, {"vaga": "LIDER DE LOJA", "qtd": "1.0", "loja": "MAIS CAPINHAS", "solicitante": "FELIPE", "tipo": "APENAS TRIAGEM", "abertura": "05/02/2026", "status": "ABERTA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "1 PERFIL ENVIADO/ TRIAR MAIS PERFIS  / AGUARDANDO RETORNO 12/03", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "CONSULTOR DE VENDAS", "qtd": "1.0", "loja": "LA VIE COLCHÕES", "solicitante": "LUCIANA", "tipo": "APENAS TRIAGEM", "abertura": "10/02/2026", "status": "ABERTA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "4 PERFIS ENCAMINHADOS/ TEM DUAS PESSOAS EM TESTE E ESTOU AGUARDANDO RETORNO DA RESPONSAVEL 26/02 / 2 PERFIS ENVIADOS 02/03/ DUAS PESSOAS EM TREINAMENTO 12/03 / 3 PERFIS ENVIADOS DIA 18/03", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "CONSULTOR DE VENDAS", "qtd": "1.0", "loja": "LA VIE COLCHÕES", "solicitante": "LUCIANA", "tipo": "APENAS TRIAGEM", "abertura": "10/02/2026", "status": "ABERTA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "3 PERFIS ENCAMINHADOS / TEM DUAS PESSOAS EM TESTE E ESTOU AGUARDANDO RETORNO DA RESPONSAVEL 26/02 / 2 PERFIS ENVIADOS 02/03 / DUAS PESSOAS EM TREINAMENTO 12/03 / 3 PERFIS ENVIADOS DIA 18/03", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "VENDEDOR", "qtd": "1.0", "loja": "PIPOCA AMERICANA", "solicitante": "ANGELICA", "tipo": "APENAS TRIAGEM", "abertura": "11/02/2026", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "2 PERFIL ENVIADO", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "VENDEDOR", "qtd": "1.0", "loja": "PIPOCA AMERICANA", "solicitante": "ANGELICA", "tipo": "APENAS TRIAGEM", "abertura": "11/02/2026", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "2 PERFIL ENVIADO", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "VENDEDOR", "qtd": "1.0", "loja": "PIPOCA AMERICANA", "solicitante": "ANGELICA", "tipo": "APENAS TRIAGEM", "abertura": "11/02/2026", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "2 PERFIL ENVIADO", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "VENDEDOR", "qtd": "1.0", "loja": "PIPOCA AMERICANA", "solicitante": "ANGELICA", "tipo": "APENAS TRIAGEM", "abertura": "11/02/2026", "status": "ABERTA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "2 PERFIL ENVIADO/ AGUARDANDOELE RETORNAR PARA SABER SE A VAGA SERA TEMPORARIA 12/03", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "OPERADOR DE LOJA", "qtd": "1.0", "loja": "AMERICANAS", "solicitante": "BERGHSON", "tipo": "APENAS TRIAGEM", "abertura": "11/02/2026", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "1 PERFIL ENVIADO/ ÚLTIMO CONTATO 27/02 A RESPONSAVEL FALOU QUE QUANDO PUDER RETORNA COM FEEDBACK/ SEM RETORNO 12/03", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "OPERADOR DE LOJA", "qtd": "1.0", "loja": "AMERICANAS", "solicitante": "BERGHSON", "tipo": "APENAS TRIAGEM", "abertura": "11/02/2026", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "2 PERFIS ENCAMINHADOS/ ÚLTIMO CONTATO 27/02 A RESPONSAVEL FALOU QUE QUANDO PUDER RETORNA COM FEEDBACK / SEM RETORNO 12/03", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "OPERADOR DE LOJA", "qtd": "1.0", "loja": "AMERICANAS", "solicitante": "BERGHSON", "tipo": "APENAS TRIAGEM", "abertura": "11/02/2026", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "2 PERFIS ENCAMINHADOS/ ÚLTIMO CONTATO 27/02 A RESPONSAVEL FALOU QUE QUANDO PUDER RETORNA COM FEEDBACK / SEM RETORNO 12/03", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "OPERADOR DE LOJA", "qtd": "1.0", "loja": "AMERICANAS", "solicitante": "BERGHSON", "tipo": "APENAS TRIAGEM", "abertura": "11/02/2026", "status": "ABERTA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "2 PERFIS ENCAMINHADOS/ ÚLTIMO CONTATO 27/02 A RESPONSAVEL FALOU QUE QUANDO PUDER RETORNA COM FEEDBACK / SEM RETORNO 12/03", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "OPERADOR DE LOJA", "qtd": "1.0", "loja": "AMERICANAS", "solicitante": "BERGHSON", "tipo": "APENAS TRIAGEM", "abertura": "11/02/2026", "status": "ABERTA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "2 PERFIS ENCAMINHADOS/ ÚLTIMO CONTATO 27/02 A RESPONSAVEL FALOU QUE QUANDO PUDER RETORNA COM FEEDBACK / SEM RETORNO 12/03", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "OPERADOR DE LOJA", "qtd": "1.0", "loja": "AMERICANAS", "solicitante": "BERGHSON", "tipo": "APENAS TRIAGEM", "abertura": "11/02/2026", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "2 PERFIS ENCAMINHADOS/ ÚLTIMO CONTATO 27/02 A RESPONSAVEL FALOU QUE QUANDO PUDER RETORNA COM FEEDBACK", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "OPERADOR DE LOJA", "qtd": "1.0", "loja": "AMERICANAS", "solicitante": "BERGHSON", "tipo": "APENAS TRIAGEM", "abertura": "11/02/2026", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "2 PERFIS ENCAMINHADOS/ ÚLTIMO CONTATO 27/02 A RESPONSAVEL FALOU QUE QUANDO PUDER RETORNA COM FEEDBACK", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "OPERADOR DE LOJA", "qtd": "1.0", "loja": "AMERICANAS", "solicitante": "BERGHSON", "tipo": "APENAS TRIAGEM", "abertura": "11/02/2026", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "2 PERFIS ENCAMINHADOS/ ÚLTIMO CONTATO 27/02 A RESPONSAVEL FALOU QUE QUANDO PUDER RETORNA COM FEEDBACK", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "OPERADOR DE LOJA", "qtd": "1.0", "loja": "AMERICANAS", "solicitante": "BERGHSON", "tipo": "APENAS TRIAGEM", "abertura": "11/02/2026", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "3 PERFIS ENCAMINHADOS/ ÚLTIMO CONTATO 27/02 A RESPONSAVEL FALOU QUE QUANDO PUDER RETORNA COM FEEDBACK", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "VENDEDOR", "qtd": "1.0", "loja": "MOMMY BROWNIES", "solicitante": "VALDENE", "tipo": "APENAS TRIAGEM", "abertura": "19/02/2026", "status": "ABERTA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "3 PERFIS ENVIADOS/ ENTRAR EM CONTATO 13/03", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "SUBGERENTE DE LOJA", "qtd": "1.0", "loja": "ATAN", "solicitante": "MAÍRA ALBUQUERQUE", "tipo": "APENAS TRIAGEM", "abertura": "06/02/0206", "status": "ABERTA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "2 PERFIS ENVIADOS ELA VAI RETORNAR PARA ATUALIZAR SOBRE AS ENTREVISTAS MARCADAS NO DIA 13/03/ AGUARDANDO RETORNO DE MAÍRA 18/03", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "PCD", "qtd": "1.0", "loja": "BROOKSFIELD", "solicitante": "RAIMUNDO NUNES", "tipo": "APENAS TRIAGEM", "abertura": "26/02/2026", "status": "FECHADA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "2 PERFIS ENVIADOS", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "VENDEDORA", "qtd": "1.0", "loja": "DUDA BELLA SEMI JÓIAS", "solicitante": "MARIA", "tipo": "APENAS TRIAGEM", "abertura": "03/03/2026", "status": "ABERTA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "2 PERFIS ENVIADOS,MAS SEM PERFIS ADERENTES AO TEMPO DE EXPERIENCIA EXIGIDA E NA AREA ESPECIFICA, MAS CONTINUO TRIANDO", "etapa": "EM TRIAGEM", "candidato": ""}, {"vaga": "ATENDENTE", "qtd": "2.0", "loja": "RESTAURANTE CHINATOWN", "solicitante": "JOSE MANOEL", "tipo": "APENAS TRIAGEM", "abertura": "04/03/2026", "status": "ABERTA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "", "etapa": "EM TRIAGEM", "candidato": ""}, {"vaga": "CONSULTORA DE VENDAS", "qtd": "2.0", "loja": "CARMEN STEFFENS", "solicitante": "MILTON CARVALHO", "tipo": "APENAS TRIAGEM", "abertura": "05/03/2026", "status": "ABERTA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "2 PERFIS ENVIADOS", "etapa": "EM TRIAGEM", "candidato": ""}, {"vaga": "CONSULTORA DE VENDAS", "qtd": "1.0", "loja": "LILICA & TIGOR", "solicitante": "MARÍLIA", "tipo": "APENAS TRIAGEM", "abertura": "05/03/2026", "status": "ABERTA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "3 PERFIS ENVIADOS / AGUARDANDO RETORNO 18/03", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}, {"vaga": "ASSISTENTE DE LOJA", "qtd": "2.0", "loja": "RENNER", "solicitante": "VALDSON", "tipo": "APENAS TRIAGEM", "abertura": "08/03/2026", "status": "ABERTA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "EM TRIAGEM", "etapa": "EM TRIAGEM", "candidato": ""}, {"vaga": "ATENDENTE", "qtd": "1.0", "loja": "JOAO DOUTOR", "solicitante": "PATRÍCIA", "tipo": "APENAS TRIAGEM", "abertura": "10/03/2026", "status": "ABERTA", "rec": "BEATRIZ", "ap": "NO PRAZO", "obs": "3 PERFIS ENVIADOS", "etapa": "AGUARDANDO RETORNO DO LOJISTA", "candidato": ""}];
+var INT = FALLBACK_INT;
+var LOJ = FALLBACK_LOJ;
+
+// ── FETCH ──────────────────────────────────────────────────
+function fetchData() {
+  var btn = document.getElementById('btnR');
+  var dot = document.getElementById('statusDot');
+  var msg = document.getElementById('statusMsg');
+  btn.disabled = true;
+  btn.classList.add('spin');
+  dot.className = 'status-dot loading';
+  msg.textContent = 'Buscando dados...';
+
+  fetch(SCRIPT_URL)
+    .then(function(res) { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
+    .then(function(data) {
+      if (data.status === 'ok') {
+        if (data.internas && data.internas.length > 0) INT = data.internas;
+        if (data.lojistas && data.lojistas.length > 0) LOJ = data.lojistas;
+        dot.className = 'status-dot';
+        var ts = new Date().toLocaleTimeString('pt-BR');
+        msg.innerHTML = '<b>Atualizado</b> — dados da planilha Google Sheets';
+        document.getElementById('statusTs').textContent = ts;
+        document.getElementById('tsLabel').textContent = ts;
+      } else { throw new Error(data.error || 'Erro'); }
+    })
+    .catch(function(err) {
+      dot.className = 'status-dot error';
+      msg.textContent = 'Cache local — ' + err.message;
+    })
+    .finally(function() {
+      btn.disabled = false;
+      btn.classList.remove('spin');
+      resetSelects();
+      render();
+    });
+}
+
+// ── UTILITÁRIOS ───────────────────────────────────────────
+var C = ['#4f8ef7','#22d3a0','#f5a623','#9b72f7','#f25c5c','#22d3d3','#e879a0','#84cc16','#fb923c','#a78bfa','#38bdf8','#f472b6'];
+
+function grp(a, k) {
+  var m = {};
+  a.forEach(function(r) { var v = (r[k] || 'N/D').trim(); m[v] = (m[v] || 0) + 1; });
+  return Object.entries(m).sort(function(a, b) { return b[1] - a[1]; });
+}
+
+// Converte qualquer formato de data para objeto Date
+function parseDate(s) {
+  if (!s || s === '') return null;
+  // Formato dd/mm/yyyy ou dd/mm/yy
+  var p = String(s).split('/');
+  if (p.length === 3) {
+    var y = +p[2] < 100 ? 2000 + +p[2] : +p[2];
+    return new Date(y, +p[1]-1, +p[0]);
+  }
+  // Formato ISO: 2026-03-18 ou 2026-03-18T00:00:00
+  if (String(s).match(/^\d{4}-\d{2}-\d{2}/)) {
+    var iso = String(s).substring(0, 10).split('-');
+    return new Date(+iso[0], +iso[1]-1, +iso[2]);
+  }
+  // Formato "Fri Aug 15 2025 ..." (Date.toString)
+  var d = new Date(s);
+  if (!isNaN(d.getTime())) return d;
+  return null;
+}
+
+// Ordenação por data
+function pd(s) {
+  var d = parseDate(s);
+  return d ? d.getTime() : 0;
+}
+
+// Formatar data abreviada: dd/mm/aa
+function fmtData(s) {
+  if (!s || s === '') return '';
+  var d = parseDate(s);
+  if (!d || isNaN(d.getTime())) return '';
+  var dd = String(d.getDate()).padStart(2,'0');
+  var mm = String(d.getMonth()+1).padStart(2,'0');
+  var yy = String(d.getFullYear()).slice(2);
+  return dd + '/' + mm + '/' + yy;
+}
+
+var SP = {
+  'ABERTA':          '<span class="pill p-open">🟢 Aberta</span>',
+  'FECHADA':         '<span class="pill p-closed">✓ Fechada</span>',
+  'EM ADMISSÃO':     '<span class="pill p-adm">📋 Admissão</span>',
+  'CANCELADA':       '<span class="pill p-cancel">✕ Cancelada</span>',
+  'REPROVADA':       '<span class="pill p-repr">✗ Reprovada</span>',
+  'SERÁ SOLICITADA': '<span class="pill p-will">⏳ A Solicitar</span>',
+};
+var PP = {
+  'ATRASADA':          '<span class="pill p-late">⚠ Atrasada</span>',
+  'EM DIA':            '<span class="pill p-ok">✓ Em Dia</span>',
+  'FECHADA NO PRAZO':  '<span class="pill p-closed">✓ No Prazo</span>',
+  'FECHADA EM ATRASO': '<span class="pill p-repr">⚠ Atrasada</span>',
+  'NO PRAZO':          '<span class="pill p-ok">✓ No Prazo</span>',
+  'NO PRAZO ':         '<span class="pill p-ok">✓ No Prazo</span>',
+  'CANCELADA':         '<span class="pill p-cancel">Cancelada</span>',
+};
+function pSt(s) { return SP[(s||'').trim()] || '<span class="pill p-ok">'+(s||'')+'</span>'; }
+function pAp(s) { return PP[(s||'').trim()] || (s ? '<span class="pill p-ok">'+s+'</span>' : ''); }
+
+// ── RENDER ────────────────────────────────────────────────
+function render() {
+  var d = INT;
+  document.getElementById('badgeInt').textContent = d.length + ' Int.';
+  document.getElementById('badgeLoj').textContent = LOJ.length + ' Loj.';
+
+  // Alerts
+  var atArr = d.filter(function(r) { return r.status&&r.status.trim()==='ABERTA'&&r.ap&&r.ap.toUpperCase().includes('ATRASADA'); });
+  var aDiv = document.getElementById('alertDiv');
+  if (atArr.length) {
+    aDiv.style.display = 'flex';
+    document.getElementById('alertItems').innerHTML = atArr.map(function(r) {
+      return '<span class="pill p-late">'+r.vaga+'</span>';
+    }).join('');
+  } else { aDiv.style.display = 'none'; }
+
+  // KPI counts
+  var ab  = d.filter(function(r){return r.status&&r.status.trim()==='ABERTA';}).length;
+  var adm = d.filter(function(r){return r.status&&r.status.trim()==='EM ADMISSÃO';}).length;
+  var fe  = d.filter(function(r){return r.status&&r.status.trim()==='FECHADA';}).length;
+  var ca  = d.filter(function(r){return r.status&&r.status.trim()==='CANCELADA';}).length;
+  var at  = atArr.length;
+  var cc  = d.filter(function(r){return r.candidato;}).length;
+
+  function kpiHTML(arr) {
+    return arr.map(function(k) {
+      return '<div class="kpi" style="--ac:'+k.ac+'"><div class="kpi-e">'+k.e+'</div><div class="kpi-l">'+k.l+'</div><div class="kpi-v">'+k.v+'</div><div class="kpi-n">'+k.n+'</div></div>';
+    }).join('');
+  }
+
+  document.getElementById('kpis').innerHTML = kpiHTML([
+    {l:'Total Int.',    v:d.length, n:'vagas internas', ac:'var(--blue)',   e:'📋'},
+    {l:'Abertas',       v:ab,       n:'em processo',    ac:'var(--green)',  e:'🟢'},
+    {l:'Em Admissão',   v:adm,      n:'finalizando',    ac:'var(--amber)',  e:'📋'},
+    {l:'Fechadas',      v:fe,       n:'concluídas',     ac:'var(--teal)',   e:'✅'},
+    {l:'⚠ Atrasadas',  v:at,       n:'fora do prazo',  ac:'var(--red)',    e:'⚠️'},
+    {l:'Candidatos',    v:cc,       n:'selecionados',   ac:'var(--purple)', e:'🎯'},
+    {l:'Canceladas',    v:ca,       n:'canceladas',     ac:'var(--t3)',     e:'✕'},
+    {l:'Lojistas',      v:LOJ.length,n:'vagas',         ac:'var(--pink)',   e:'🛍️'},
+  ]);
+
+  document.getElementById('kpisInt').innerHTML = kpiHTML([
+    {l:'Total',         v:d.length, n:'vagas',          ac:'var(--blue)',  e:'📋'},
+    {l:'Abertas',       v:ab,       n:'em processo',    ac:'var(--green)', e:'🟢'},
+    {l:'Em Admissão',   v:adm,      n:'finalizando',    ac:'var(--amber)', e:'📋'},
+    {l:'Fechadas',      v:fe,       n:'concluídas',     ac:'var(--teal)',  e:'✅'},
+    {l:'⚠ Atrasadas',  v:at,       n:'fora prazo',     ac:'var(--red)',   e:'⚠️'},
+    {l:'Empresas',      v:new Set(d.map(function(r){return r.empresa;}).filter(Boolean)).size, n:'diferentes',ac:'var(--purple)',e:'🏢'},
+  ]);
+
+  var lAb = LOJ.filter(function(r){return r.status&&r.status.trim()==='ABERTA';}).length;
+  var lFe = LOJ.filter(function(r){return r.status&&r.status.trim()==='FECHADA';}).length;
+  var lCa = LOJ.filter(function(r){return r.status&&r.status.trim()==='CANCELADA';}).length;
+  document.getElementById('kpisLoj').innerHTML = kpiHTML([
+    {l:'Total',      v:LOJ.length, n:'cadastradas', ac:'var(--amber)', e:'🛍️'},
+    {l:'Abertas',    v:lAb,        n:'em triagem',  ac:'var(--green)', e:'🟢'},
+    {l:'Fechadas',   v:lFe,        n:'concluídas',  ac:'var(--teal)',  e:'✅'},
+    {l:'Canceladas', v:lCa,        n:'canceladas',  ac:'var(--t3)',    e:'✕'},
+    {l:'Lojas',      v:new Set(LOJ.map(function(r){return r.loja;}).filter(Boolean)).size, n:'diferentes',ac:'var(--blue)',e:'🏪'},
+  ]);
+
+  // Charts
+  hbar('cEmp',  grp(d,'empresa'));
+  hbar('cRec',  grp(d,'rec'));
+  hbar('cTipo', grp(d,'tipo'));
+  hbar('cLojas',grp(LOJ,'loja').slice(0,9));
+  drawDonut('donut','donutLeg',       grp(d,'status'),   d.length,   110);
+  drawDonut('donutLoj','donutLojLeg', grp(LOJ,'status'), LOJ.length, 110);
+
+  // Funil — só vagas ativas
+  var active = d.filter(function(r){return r.status&&(r.status.trim()==='ABERTA'||r.status.trim()==='EM ADMISSÃO');});
+  var fn = grp(active,'etapa').filter(function(e){return e[0]&&e[0]!='N/D';}).slice(0,8);
+  var fnMax = fn.length ? fn[0][1] : 1;
+  document.getElementById('funnel').innerHTML = fn.map(function(e,i){
+    return '<div class="fn" style="--c:'+C[i%C.length]+'"><div class="fn-nm" title="'+e[0]+'">'+e[0]+'</div><div class="fn-bar"><div class="fn-fill" style="width:'+Math.round(e[1]/fnMax*100)+'%;background:'+C[i%C.length]+'"></div></div><div class="fn-n">'+e[1]+'</div></div>';
+  }).join('');
+
+  filterInt();
+  filterLoj();
+  buildTimeline();
+  buildProgSetor();
+}
+
+function hbar(id, entries) {
+  var max = entries.reduce(function(a,b){return a+b[1];},0)||1;
+  document.getElementById(id).innerHTML = entries.slice(0,9).map(function(e,i){
+    return '<div class="hbar-row"><div class="hbar-l" title="'+e[0]+'">'+e[0]+'</div><div class="hbar-t"><div class="hbar-f" style="width:'+Math.max(6,Math.round(e[1]/max*100))+'%;--c1:'+C[i%C.length]+';--c2:'+C[(i+2)%C.length]+'"><span class="hbar-n">'+e[1]+'</span></div></div><div class="hbar-p">'+Math.round(e[1]/max*100)+'%</div></div>';
+  }).join('');
+}
+
+function drawDonut(svgId, legId, entries, total, size) {
+  size = size || 128;
+  var cx = size/2, cy = size/2, r = size*0.35, sw = size*0.13;
+  var ci = 2*Math.PI*r, off = 0, paths = '';
+  entries.forEach(function(e,i){
+    var pct=e[1]/total, da=pct*ci, ga=ci-da;
+    paths+='<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="'+C[i]+'" stroke-width="'+sw+'" stroke-dasharray="'+da.toFixed(1)+' '+ga.toFixed(1)+'" stroke-dashoffset="'+(-off*ci).toFixed(1)+'" transform="rotate(-90 '+cx+' '+cy+')"/>';
+    off+=pct;
+  });
+  document.getElementById(svgId).innerHTML=paths+'<text x="'+cx+'" y="'+(cy+5)+'" text-anchor="middle" fill="#e8edf7" font-size="'+(size*0.12)+'" font-family="Outfit" font-weight="700">'+total+'</text>';
+  document.getElementById(legId).innerHTML=entries.map(function(e,i){return '<div class="leg-r"><div class="leg-d" style="background:'+C[i]+'"></div><span>'+(e[0]||'N/D')+'</span><span class="leg-v">'+e[1]+'</span></div>';}).join('');
+}
+
+// ── TABELAS ───────────────────────────────────────────────
+function resetSelects() {
+  ['sEmp','sSt','sRec','sLojSt','sLojRec'].forEach(function(id){
+    var s=document.getElementById(id); while(s.options.length>1) s.remove(1);
+  });
+}
+
+function populateSelect(id, values) {
+  var s = document.getElementById(id);
+  if (s.options.length <= 1) {
+    Array.from(new Set(values.filter(Boolean))).sort().forEach(function(v){
+      var o=document.createElement('option'); o.value=v; o.textContent=v; s.appendChild(o);
+    });
+  }
+}
+
+function filterInt() {
+  populateSelect('sEmp',  INT.map(function(r){return r.empresa;}));
+  populateSelect('sSt',   INT.map(function(r){return r.status&&r.status.trim();}));
+  populateSelect('sRec',  INT.map(function(r){return r.rec&&r.rec.trim();}));
+
+  var q     = document.getElementById('srchInt').value.toLowerCase();
+  var emp   = document.getElementById('sEmp').value;
+  var st    = document.getElementById('sSt').value;
+  var prazo = document.getElementById('sPrazo').value;
+  var rec   = document.getElementById('sRec').value;
+
+  var rows = INT.filter(function(r){
+    var txt = (r.empresa+' '+r.vaga+' '+r.setor+' '+r.rec+' '+r.solicitante+' '+r.etapa+' '+r.candidato).toLowerCase();
+    if (q     && !txt.includes(q)) return false;
+    if (emp   && r.empresa !== emp) return false;
+    if (st    && (r.status||'').trim() !== st) return false;
+    if (prazo && !(r.ap||'').toUpperCase().includes(prazo.toUpperCase())) return false;
+    if (rec   && (r.rec||'').trim() !== rec) return false;
+    return true;
+  });
+
+  document.getElementById('tbI').innerHTML = rows.map(function(r){
+    return '<tr>'
+      +'<td class="m tr" style="max-width:100px">'+r.empresa+'</td>'
+      +'<td class="m tr" style="max-width:150px" title="'+r.vaga+'">'+r.vaga+'</td>'
+      +'<td class="tr" style="max-width:110px">'+r.setor+'</td>'
+      +'<td class="tr" style="max-width:110px">'+r.rec+'</td>'
+      +'<td class="dt">'+fmtData(r.abertura)+'</td>'
+      +'<td class="dt">'+fmtData(r.fechamento)+'</td>'
+      +'<td style="min-width:110px;white-space:nowrap">'+pAp(r.ap)+'</td>'
+      +'<td style="min-width:100px;white-space:nowrap">'+pSt(r.status)+'</td>'
+      +'<td class="tr" style="max-width:150px" title="'+r.etapa+'">'+r.etapa+'</td>'
+      +'<td class="tr" style="max-width:100px">'+r.solicitante+'</td>'
+      +'<td class="tr" style="max-width:130px">'+(r.candidato?'<span class="pill p-cand">✓ '+r.candidato+'</span>':'')+'</td>'
+      +'<td class="dt">'+fmtData(r.admissao)+'</td>'
+      +'</tr>';
+  }).join('');
+  document.getElementById('cntInt').textContent = rows.length + ' / ' + INT.length;
+}
+
+function filterLoj() {
+  populateSelect('sLojSt',  LOJ.map(function(r){return r.status&&r.status.trim();}));
+  populateSelect('sLojRec', LOJ.map(function(r){return r.rec&&r.rec.trim();}));
+
+  var q   = document.getElementById('srchLoj').value.toLowerCase();
+  var st  = document.getElementById('sLojSt').value;
+  var rec = document.getElementById('sLojRec').value;
+
+  var rows = LOJ.filter(function(r){
+    var txt = (r.vaga+' '+r.loja+' '+r.solicitante+' '+r.rec).toLowerCase();
+    if (q   && !txt.includes(q)) return false;
+    if (st  && (r.status||'').trim() !== st) return false;
+    if (rec && (r.rec||'').trim() !== rec) return false;
+    return true;
+  });
+
+  document.getElementById('tbL').innerHTML = rows.map(function(r){
+    return '<tr>'
+      +'<td class="m tr" style="max-width:120px">'+r.vaga+'</td>'
+      +'<td class="m tr" style="max-width:120px">'+r.loja+'</td>'
+      +'<td class="dt">'+(r.qtd||1)+'</td>'
+      +'<td class="tr" style="max-width:110px">'+r.solicitante+'</td>'
+      +'<td class="tr" style="max-width:90px">'+r.tipo+'</td>'
+      +'<td class="dt">'+fmtData(r.abertura)+'</td>'
+      +'<td class="tr" style="max-width:110px">'+r.rec+'</td>'
+      +'<td>'+pAp(r.ap)+'</td>'
+      +'<td>'+pSt(r.status)+'</td>'
+      +'<td class="tr" style="max-width:180px" title="'+r.obs+'">'+r.obs+'</td>'
+      +'</tr>';
+  }).join('');
+  document.getElementById('cntLoj').textContent = rows.length + ' / ' + LOJ.length;
+}
+
+// ── TIMELINE — mais recentes primeiro ────────────────────
+function buildTimeline() {
+  // Extrai a data mais recente mencionada nas observações (ex: "18/03 -", "05/03 -")
+  function lastObsDate(r) {
+    if (!r.obs) return 0;
+    // Procura padrões dd/mm ou dd/mm/yyyy nas obs
+    var matches = r.obs.match(/(\d{2})\/(\d{2})(?:\/(\d{2,4}))?/g);
+    if (!matches || matches.length === 0) return 0;
+    var last = matches[matches.length - 1];
+    var p = last.split('/');
+    var year = p[2] ? (+p[2] < 100 ? 2000 + +p[2] : +p[2]) : 2026;
+    return new Date(year, +p[1]-1, +p[0]).getTime();
+  }
+
+  var sorted = INT
+    .filter(function(r){ return r.abertura && r.status && r.status.trim() !== 'CANCELADA'; })
+    .sort(function(a, b) {
+      return pd(b.abertura) - pd(a.abertura);
+    });
+
+  document.getElementById('tlBody').innerHTML = sorted.map(function(r){
+    var late   = r.ap && r.ap.toUpperCase().includes('ATRASADA');
+    var closed = r.status && r.status.trim() === 'FECHADA';
+    var admiss = r.status && r.status.trim() === 'EM ADMISSÃO';
+    var dot    = late ? 'var(--red)' : closed ? 'var(--teal)' : admiss ? 'var(--amber)' : 'var(--green)';
+    var dataTxt = 'Abertura: ' + fmtData(r.abertura) + (r.fechamento ? ' · Fechamento: ' + fmtData(r.fechamento) : '');
+    return '<div class="tl-i">'
+      +'<div class="tl-lft"><div class="tl-dot" style="background:'+dot+'"></div><div class="tl-line"></div></div>'
+      +'<div><div class="tl-dt">'+dataTxt+'</div>'
+      +'<div class="tl-tt">'+r.vaga+'</div>'
+      +'<div class="tl-mt">'+r.empresa+' · '+r.setor+' '+pSt(r.status)+' '+pAp(r.ap)+'</div>'
+      +'</div></div>';
+  }).join('');
+}
+
+// ── PROGRESSO SETOR ───────────────────────────────────────
+function buildProgSetor() {
+  var entries = grp(INT,'setor').filter(function(e){ return e[0] && e[0] !== 'N/D'; });
+  var max = entries.length ? entries[0][1] : 1;
+  document.getElementById('progSetor').innerHTML = entries.map(function(e,i){
+    return '<div class="prog-r"><div class="prog-l" title="'+e[0]+'">'+e[0]+'</div><div class="prog-t"><div class="prog-f" style="width:'+Math.round(e[1]/max*100)+'%;--c:'+C[i%C.length]+'"></div></div><div class="prog-n">'+e[1]+'</div></div>';
+  }).join('');
+}
+
+// ── TABS ──────────────────────────────────────────────────
+function goTab(n, btn) {
+  document.querySelectorAll('.tab').forEach(function(b){ b.classList.remove('on'); });
+  btn.classList.add('on');
+  ['overview','internas','lojistas','timeline'].forEach(function(t){
+    var el = document.getElementById('tab-'+t);
+    if (el) el.style.display = t === n ? 'block' : 'none';
+  });
+}
+
+// ── INICIAR ───────────────────────────────────────────────
+render();
+fetchData();
+setInterval(fetchData, REFRESH_INTERVAL);
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js')
+      .then(function(reg) { console.log('SW OK:', reg.scope); })
+      .catch(function(err) { console.log('SW erro:', err); });
+  });
+}
+</script>
+</body>
+</html>
